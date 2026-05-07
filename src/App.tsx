@@ -137,7 +137,7 @@ const techIcons: Record<string, { icon: ElementType; color: string }> = {
   Hetzner: { icon: SiHetzner, color: "#D50C2D" },
   Docker: { icon: SiDocker, color: "#2496ED" },
   Portainer: { icon: SiPortainer, color: "#13BEF9" },
-  Coolify: { icon: Cloud, color: "#10B981" },
+  Coolify: { icon: Cloud, color: "#8B5CF6" },
   "Linux Servers": { icon: SiLinux, color: "#FCC624" },
   Zendesk: { icon: SiZendesk, color: "#03363D" },
   SurveyMonkey: { icon: SiSurveymonkey, color: "#00BF6F" },
@@ -247,9 +247,8 @@ function Header({
             <a
               key={item}
               href={`#${slug(item)}`}
-              className={`relative py-2 transition hover:text-brand ${
-                activeSection === slug(item) ? "text-primary" : "text-slatecopy"
-              }`}
+              className={`relative py-2 transition hover:text-brand ${activeSection === slug(item) ? "text-primary" : "text-slatecopy"
+                }`}
             >
               {item}
               {activeSection === slug(item) ? <span className="absolute inset-x-0 -bottom-4 h-0.5 rounded-full bg-primary" /> : null}
@@ -276,7 +275,7 @@ function Header({
               <a
                 key={item}
                 href={`#${slug(item)}`}
-            className={activeSection === slug(item) ? "text-primary" : undefined}
+                className={activeSection === slug(item) ? "text-primary" : undefined}
                 onClick={onMenuToggle}
               >
                 {item}
@@ -306,9 +305,8 @@ function LanguageToggle({
       {(["es", "en"] as Locale[]).map((item) => (
         <button
           key={item}
-          className={`inline-flex min-w-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold uppercase transition sm:px-3 ${
-            locale === item ? "bg-primary text-white" : "text-slatecopy hover:text-accentHover"
-          }`}
+          className={`inline-flex min-w-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold uppercase transition sm:px-3 ${locale === item ? "bg-primary text-white" : "text-slatecopy hover:text-accentHover"
+            }`}
           onClick={() => onLocaleChange(item)}
         >
           <FlagMark country={item === "en" ? "US" : spanishRegion} />
@@ -341,15 +339,15 @@ function LanguageNotice({
   const copy =
     browserLocale === "en"
       ? {
-          message: "This site is also available in English, matching your browser language.",
-          action: "Switch to English",
-          close: "Dismiss language suggestion",
-        }
+        message: "This site is also available in English, matching your browser language.",
+        action: "Switch to English",
+        close: "Dismiss language suggestion",
+      }
       : {
-          message: "Este sitio también está disponible en español, según el idioma de tu navegador.",
-          action: "Cambiar a español",
-          close: "Cerrar sugerencia de idioma",
-        };
+        message: "Este sitio también está disponible en español, según el idioma de tu navegador.",
+        action: "Cambiar a español",
+        close: "Cerrar sugerencia de idioma",
+      };
 
   return (
     <div className="sticky top-[73px] z-40 border-b border-line bg-white/95 px-5 py-3 shadow-sm backdrop-blur-xl lg:top-[81px] lg:px-8">
@@ -416,7 +414,7 @@ function Hero({ content: t }: ContentProps) {
       onPointerMove={handlePointerMove}
       onPointerLeave={resetPointer}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_16%,rgba(16,185,129,0.12),transparent_30%),linear-gradient(90deg,#ffffff_0%,#ffffff_48%,#F8FAFC_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_16%,rgba(124,58,237,0.12),transparent_30%),linear-gradient(90deg,#ffffff_0%,#ffffff_48%,#F8FAFC_100%)]" />
       <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-14 pt-14 lg:min-h-[760px] lg:grid-cols-[1fr_0.96fr] lg:gap-12 lg:px-8 lg:pb-20 lg:pt-24">
         <motion.div initial="hidden" animate="visible" variants={stagger} style={{ y: copyY }} className="flex flex-col justify-center">
           <motion.div style={{ y: heroCopyScroll }}>
@@ -475,19 +473,19 @@ function ArchitecturePanel({ title, items, dotsY }: { title: string; items: stri
   const isEnglish = title.toLowerCase().startsWith("impact");
   const stats = isEnglish
     ? [
-        ["Users", "12,540", "+12.9%"],
-        ["MRR", "$24,830", "+8.1%"],
-        ["Churn", "2.4%", "-0.6%"],
-      ]
+      ["Users", "12,540", "+12.9%"],
+      ["MRR", "$24,830", "+8.1%"],
+      ["Churn", "2.4%", "-0.6%"],
+    ]
     : [
-        ["Usuarios", "12,540", "+12.9%"],
-        ["MRR", "$24,830", "+8.1%"],
-        ["Churn", "2.4%", "-0.6%"],
-      ];
+      ["Usuarios", "12,540", "+12.9%"],
+      ["MRR", "$24,830", "+8.1%"],
+      ["Churn", "2.4%", "-0.6%"],
+    ];
 
   return (
     <div className="relative rounded-[28px] border border-line bg-white p-4 shadow-glow">
-      <motion.div style={{ y: dotsY }} className="absolute -right-10 -top-12 hidden h-24 w-40 bg-[radial-gradient(circle,#99F6E4_1.5px,transparent_1.5px)] [background-size:14px_14px] opacity-60 lg:block" />
+      <motion.div style={{ y: dotsY }} className="absolute -right-10 -top-12 hidden h-24 w-40 bg-[radial-gradient(circle,#A78BFA_1.5px,transparent_1.5px)] [background-size:14px_14px] opacity-60 lg:block" />
       <div className="rounded-2xl border border-line bg-mist p-5">
         <div className="mb-6 flex items-center justify-between">
           <div>
@@ -503,7 +501,7 @@ function ArchitecturePanel({ title, items, dotsY }: { title: string; items: stri
             <div key={label} className="rounded-lg border border-line bg-white p-4 shadow-sm">
               <p className="text-[11px] font-semibold text-slatecopy">{label}</p>
               <p className="mt-2 text-xl font-semibold text-ink">{value}</p>
-              <p className="mt-1 text-xs font-semibold text-emerald-500">{delta}</p>
+              <p className="mt-1 text-xs font-semibold text-accentHover">{delta}</p>
             </div>
           ))}
         </div>
@@ -518,7 +516,7 @@ function ArchitecturePanel({ title, items, dotsY }: { title: string; items: stri
               {[30, 42, 38, 52, 68, 58, 76, 84].map((height, index) => (
                 <span
                   key={index}
-                  className="flex-1 rounded-t-md bg-gradient-to-t from-brand to-teal-200"
+                  className="flex-1 rounded-t-md bg-gradient-to-t from-brand to-primarySoft"
                   style={{ height: `${height}%` }}
                 />
               ))}
@@ -526,10 +524,10 @@ function ArchitecturePanel({ title, items, dotsY }: { title: string; items: stri
           </div>
 
           <div className="rounded-lg bg-ink p-4 font-mono text-[11px] leading-5 text-slate-300 shadow-soft">
-            <p className="text-teal-200">export const solution = &#123;</p>
+            <p className="text-primaryUltraSoft">export const solution = &#123;</p>
             <p className="pl-4">core: "operations",</p>
             <p className="pl-4 text-violet-300">billing: "subscriptions",</p>
-            <p className="pl-4 text-emerald-300">automation: true,</p>
+            <p className="pl-4 text-accentSoft">automation: true,</p>
             <p>&#125;;</p>
           </div>
         </div>
@@ -538,7 +536,7 @@ function ArchitecturePanel({ title, items, dotsY }: { title: string; items: stri
           <div className="rounded-lg border border-line bg-white p-4">
             <p className="mb-3 text-xs font-semibold text-slatecopy">{isEnglish ? "Distribution" : "Distribución"}</p>
             <div className="flex items-center gap-4">
-              <div className="h-20 w-20 rounded-full bg-[conic-gradient(#10B981_0_46%,#0D9488_46%_74%,#CCFBF1_74%_100%)] p-3">
+              <div className="h-20 w-20 rounded-full bg-[conic-gradient(#6D28D9_0_46%,#8B5CF6_46%_74%,#E9D5FF_74%_100%)] p-3">
                 <div className="h-full w-full rounded-full bg-white" />
               </div>
               <div className="space-y-2 text-xs font-medium text-slatecopy">
@@ -555,7 +553,7 @@ function ArchitecturePanel({ title, items, dotsY }: { title: string; items: stri
               {items.slice(0, 4).map((item) => (
                 <div key={item} className="flex items-center justify-between rounded-md bg-mist px-3 py-2 text-xs font-semibold text-slatecopy">
                   <span>{item}</span>
-                  <span className="text-emerald-500">{isEnglish ? "Active" : "Activo"}</span>
+                  <span className="text-accentHover">{isEnglish ? "Active" : "Activo"}</span>
                 </div>
               ))}
             </div>
@@ -580,17 +578,17 @@ function About({ content: t }: ContentProps) {
   const isEnglish = t.meta.location.includes("Peru");
   const metrics = t.meta.location.includes("Peru")
     ? [
-        ["10+", "Years building digital solutions"],
-        ["30+", "Projects delivered with business focus"],
-        ["8+", "Industries and operational contexts"],
-        ["100%", "Commitment to measurable outcomes"],
-      ]
+      ["10+", "Years building digital solutions"],
+      ["30+", "Projects delivered with business focus"],
+      ["8+", "Industries and operational contexts"],
+      ["100%", "Commitment to measurable outcomes"],
+    ]
     : [
-        ["10+", "Años construyendo soluciones digitales"],
-        ["30+", "Proyectos entregados con foco de negocio"],
-        ["8+", "Industrias y contextos operativos"],
-        ["100%", "Compromiso con resultados medibles"],
-      ];
+      ["10+", "Años construyendo soluciones digitales"],
+      ["30+", "Proyectos entregados con foco de negocio"],
+      ["8+", "Industrias y contextos operativos"],
+      ["100%", "Compromiso con resultados medibles"],
+    ];
 
   return (
     <Section id="sobre-mi" className="bg-mist">
@@ -631,13 +629,13 @@ function AvailabilityPanel({ content: t }: ContentProps) {
   const isEnglish = t.meta.location.includes("Peru");
 
   return (
-    <div className="mt-8 rounded-xl border border-emerald-200 bg-white p-5 shadow-soft">
+    <div className="mt-8 rounded-xl border border-lineHover bg-white p-5 shadow-soft">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-accentHover">
             <span className="relative flex h-3 w-3">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40" />
-              <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accentLight opacity-40" />
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-accentHover" />
             </span>
             {isEnglish ? "Available for strategic projects" : "Disponible para proyectos estratégicos"}
           </p>
@@ -737,35 +735,33 @@ function Projects({ content: t }: ContentProps) {
 
       <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="relative -mx-5 sm:mx-0">
-        <div
-          className="touch-carousel flex max-w-full gap-2 overflow-x-auto px-5 pb-2 pr-16 sm:gap-3 sm:px-0 sm:pr-0"
-          onScroll={handleGroupScroll}
-        >
-          {t.projects.groups.map((group, index) => (
-            <button
-              key={group.title}
-              className={`max-w-[76vw] shrink-0 truncate rounded-lg border px-4 py-3 text-sm font-semibold transition sm:max-w-none sm:px-5 ${
-                activeGroup === index
+          <div
+            className="touch-carousel flex max-w-full gap-2 overflow-x-auto px-5 pb-2 pr-16 sm:gap-3 sm:px-0 sm:pr-0"
+            onScroll={handleGroupScroll}
+          >
+            {t.projects.groups.map((group, index) => (
+              <button
+                key={group.title}
+                className={`max-w-[76vw] shrink-0 truncate rounded-lg border px-4 py-3 text-sm font-semibold transition sm:max-w-none sm:px-5 ${activeGroup === index
                   ? "border-brand/50 bg-brandSoft text-brand shadow-sm"
                   : "border-line bg-white text-slatecopy hover:border-brand hover:text-brand"
+                  }`}
+                onClick={() => chooseGroup(index)}
+              >
+                <span className="mr-2 inline-block h-2 w-2 rounded-full bg-current" />
+                {group.title}
+              </button>
+            ))}
+          </div>
+          <div
+            className={`pointer-events-none absolute inset-y-0 right-0 flex w-20 items-center justify-end bg-gradient-to-l from-white via-white/90 to-transparent pr-4 transition-opacity sm:hidden ${groupScrollHint ? "opacity-100" : "opacity-0"
               }`}
-              onClick={() => chooseGroup(index)}
-            >
-              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-current" />
-              {group.title}
-            </button>
-          ))}
-        </div>
-        <div
-          className={`pointer-events-none absolute inset-y-0 right-0 flex w-20 items-center justify-end bg-gradient-to-l from-white via-white/90 to-transparent pr-4 transition-opacity sm:hidden ${
-            groupScrollHint ? "opacity-100" : "opacity-0"
-          }`}
-          aria-hidden="true"
-        >
-          <span className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-accentHover shadow-sm">
-            <ChevronRight size={18} />
-          </span>
-        </div>
+            aria-hidden="true"
+          >
+            <span className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-accentHover shadow-sm">
+              <ChevronRight size={18} />
+            </span>
+          </div>
         </div>
       </div>
 
@@ -887,9 +883,8 @@ function Projects({ content: t }: ContentProps) {
                 {active.projects.map((item, index) => (
                   <button
                     key={item.name}
-                    className={`h-2.5 rounded-full transition-all ${
-                      activeProject === index ? "w-7 bg-brand" : "w-2.5 bg-slate-300 hover:bg-brand/50"
-                    }`}
+                    className={`h-2.5 rounded-full transition-all ${activeProject === index ? "w-7 bg-brand" : "w-2.5 bg-slate-300 hover:bg-brand/50"
+                      }`}
                     onClick={() => chooseProject(index)}
                     aria-label={`Go to ${item.name}`}
                   />
@@ -922,13 +917,13 @@ function ProjectPeek({ project, index, side }: { project: { name: string; proble
           <span className="grid h-10 w-10 place-items-center rounded-lg bg-white text-brand shadow-sm">
             <Icon size={19} />
           </span>
-          <span className="text-xs font-semibold text-emerald-500">+24.6%</span>
+          <span className="text-xs font-semibold text-accentHover">+24.6%</span>
         </div>
         <div className="mt-5 flex h-24 items-end gap-2">
           {[38, 48, 35, 58, 52, 72, 66, 86].map((height) => (
             <span
               key={height}
-              className="flex-1 rounded-t bg-gradient-to-t from-brand/80 to-teal-200/80"
+              className="flex-1 rounded-t bg-gradient-to-t from-brand/80 to-primarySoft/80"
               style={{ height: `${height}%` }}
             />
           ))}
@@ -982,7 +977,7 @@ function ProjectMobileCard({
       <div className="my-5 h-px bg-divider" />
       <div className="mt-auto">
         <div className="mb-3 flex items-center gap-2">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-600">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accentUltraSoft text-accentHover">
             <TrendingUp size={16} />
           </span>
           <p className="text-base font-semibold text-ink">{labels[2]}</p>
@@ -1066,9 +1061,8 @@ function ProjectShowcase({
                 {["AC", "CL", "PE", "MX", "+12"].map((tenant, itemIndex) => (
                   <span
                     key={tenant}
-                    className={`grid h-9 w-9 place-items-center rounded-full border-2 border-white text-[11px] font-semibold ${
-                      itemIndex % 3 === 0 ? "bg-brandSoft text-brand" : itemIndex % 3 === 1 ? "bg-violet/10 text-violet" : "bg-emerald-100 text-emerald-600"
-                    }`}
+                    className={`grid h-9 w-9 place-items-center rounded-full border-2 border-white text-[11px] font-semibold ${itemIndex % 3 === 0 ? "bg-brandSoft text-brand" : itemIndex % 3 === 1 ? "bg-violet/10 text-violet" : "bg-accentUltraSoft text-accentHover"
+                      }`}
                   >
                     {tenant}
                   </span>
@@ -1113,7 +1107,7 @@ function ProjectStatement({
   compact?: boolean;
   mobileHidden?: boolean;
 }) {
-  const color = tone === "green" ? "bg-emerald-100 text-emerald-600" : tone === "violet" ? "bg-violet/10 text-violet" : "bg-brandSoft text-brand";
+  const color = tone === "green" ? "bg-accentUltraSoft text-accentHover" : tone === "violet" ? "bg-violet/10 text-violet" : "bg-brandSoft text-brand";
 
   return (
     <div className={`border-t border-line pt-5 first:border-t-0 first:pt-0 ${mobileHidden ? "hidden lg:block" : ""}`}>
@@ -1165,8 +1159,8 @@ function Experience({ content: t }: ContentProps) {
             <div className="flex flex-col gap-3 border-b border-line pb-5 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h3 className="text-2xl font-semibold text-ink">{item.company}</h3>
-              <p className="mt-2 text-sm font-semibold text-brand">{item.role}</p>
-            </div>
+                <p className="mt-2 text-sm font-semibold text-brand">{item.role}</p>
+              </div>
               <div className="flex flex-wrap gap-2 sm:justify-end">
                 <p className="rounded-lg bg-brandSoft px-3 py-2 text-sm font-semibold text-brand">{item.period}</p>
                 <p className="rounded-lg border border-line bg-mist px-3 py-2 text-sm font-semibold text-slatecopy">{item.duration}</p>
@@ -1221,7 +1215,7 @@ function TechChip({ name }: { name: string }) {
 
   return (
     <div className="group grid min-h-[96px] w-32 shrink-0 snap-start place-items-center rounded-xl border border-line bg-white px-3 py-4 text-center shadow-sm transition hover:-translate-y-1 hover:border-brand/40 hover:shadow-soft md:w-auto">
-      <Icon size={28} style={{ color: tech?.color ?? "#10B981" }} aria-hidden="true" />
+      <Icon size={28} style={{ color: tech?.color ?? "#6D28D9" }} aria-hidden="true" />
       <span className="mt-3 max-w-full rounded-full border border-line bg-mist px-2 py-1 text-[11px] font-semibold leading-4 text-slatecopy transition group-hover:text-ink">
         {name}
       </span>
@@ -1233,90 +1227,90 @@ function Services({ content: t }: ContentProps) {
   const isEnglish = t.meta.location.includes("Peru");
   const serviceDetails = isEnglish
     ? [
-        {
-          title: "SaaS Development",
-          body: "Multi-tenant SaaS products with authentication, billing, automation and scalable infrastructure.",
-          label: "Core service",
-          icon: Braces,
-          featured: true,
-        },
-        {
-          title: "Systems Architecture",
-          body: "Resilient architectures designed for performance, maintainability, security and long-term growth.",
-          icon: Network,
-        },
-        {
-          title: "Process Automation",
-          body: "Automations that streamline operations, reduce manual work and connect business tools.",
-          icon: Bot,
-        },
-        {
-          title: "Professional Web Development",
-          body: "Fast, responsive and accessible platforms built with modern web standards and SEO foundations.",
-          icon: Globe2,
-        },
-        {
-          title: "Optimization & Performance",
-          body: "Performance audits, technical fixes and scalability improvements for reliable user experiences.",
-          icon: Activity,
-        },
-        {
-          title: "Technical SEO",
-          body: "Technical SEO strategies that improve visibility, indexing, crawlability and Core Web Vitals.",
-          icon: Search,
-        },
-        {
-          title: "Technology Consulting",
-          body: "Guidance on architecture, infrastructure, tooling and product decisions before costly implementation.",
-          icon: Sparkles,
-        },
-      ]
+      {
+        title: "SaaS Development",
+        body: "Multi-tenant SaaS products with authentication, billing, automation and scalable infrastructure.",
+        label: "Core service",
+        icon: Braces,
+        featured: true,
+      },
+      {
+        title: "Systems Architecture",
+        body: "Resilient architectures designed for performance, maintainability, security and long-term growth.",
+        icon: Network,
+      },
+      {
+        title: "Process Automation",
+        body: "Automations that streamline operations, reduce manual work and connect business tools.",
+        icon: Bot,
+      },
+      {
+        title: "Professional Web Development",
+        body: "Fast, responsive and accessible platforms built with modern web standards and SEO foundations.",
+        icon: Globe2,
+      },
+      {
+        title: "Optimization & Performance",
+        body: "Performance audits, technical fixes and scalability improvements for reliable user experiences.",
+        icon: Activity,
+      },
+      {
+        title: "Technical SEO",
+        body: "Technical SEO strategies that improve visibility, indexing, crawlability and Core Web Vitals.",
+        icon: Search,
+      },
+      {
+        title: "Technology Consulting",
+        body: "Guidance on architecture, infrastructure, tooling and product decisions before costly implementation.",
+        icon: Sparkles,
+      },
+    ]
     : [
-        {
-          title: "Desarrollo de SaaS",
-          body: "Productos SaaS multi-tenant con autenticación, billing, automatización e infraestructura escalable.",
-          label: "Servicio core",
-          icon: Braces,
-          featured: true,
-        },
-        {
-          title: "Arquitectura de Sistemas",
-          body: "Arquitecturas resilientes diseñadas para performance, mantenibilidad, seguridad y crecimiento.",
-          icon: Network,
-        },
-        {
-          title: "Automatización de procesos",
-          body: "Automatizaciones que reducen trabajo manual, conectan herramientas y ordenan la operación.",
-          icon: Bot,
-        },
-        {
-          title: "Desarrollo Web Profesional",
-          body: "Plataformas rápidas, responsive y accesibles con estándares modernos, SEO y edición controlada.",
-          icon: Globe2,
-        },
-        {
-          title: "Optimización y performance",
-          body: "Auditorías, mejoras técnicas y optimización de escalabilidad para experiencias web confiables.",
-          icon: Activity,
-        },
-        {
-          title: "SEO técnico",
-          body: "Estrategias técnicas para mejorar visibilidad, indexación, rastreo y Core Web Vitals.",
-          icon: Search,
-        },
-        {
-          title: "Consultoría tecnológica",
-          body: "Acompañamiento en arquitectura, infraestructura, herramientas y decisiones de producto.",
-          icon: Sparkles,
-        },
-      ];
+      {
+        title: "Desarrollo de SaaS",
+        body: "Productos SaaS multi-tenant con autenticación, billing, automatización e infraestructura escalable.",
+        label: "Servicio core",
+        icon: Braces,
+        featured: true,
+      },
+      {
+        title: "Arquitectura de Sistemas",
+        body: "Arquitecturas resilientes diseñadas para performance, mantenibilidad, seguridad y crecimiento.",
+        icon: Network,
+      },
+      {
+        title: "Automatización de procesos",
+        body: "Automatizaciones que reducen trabajo manual, conectan herramientas y ordenan la operación.",
+        icon: Bot,
+      },
+      {
+        title: "Desarrollo Web Profesional",
+        body: "Plataformas rápidas, responsive y accesibles con estándares modernos, SEO y edición controlada.",
+        icon: Globe2,
+      },
+      {
+        title: "Optimización y performance",
+        body: "Auditorías, mejoras técnicas y optimización de escalabilidad para experiencias web confiables.",
+        icon: Activity,
+      },
+      {
+        title: "SEO técnico",
+        body: "Estrategias técnicas para mejorar visibilidad, indexación, rastreo y Core Web Vitals.",
+        icon: Search,
+      },
+      {
+        title: "Consultoría tecnológica",
+        body: "Acompañamiento en arquitectura, infraestructura, herramientas y decisiones de producto.",
+        icon: Sparkles,
+      },
+    ];
   const technologies = ["TypeScript", "React", "Node.js", "PostgreSQL", "Docker", "AWS", "Cloudflare", "Supabase"];
 
   return (
-    <Section id="servicios" className="relative overflow-hidden bg-[linear-gradient(135deg,#F8FAFC_0%,#EEF2F7_100%)]">
+    <Section id="servicios" className="relative overflow-hidden bg-[linear-gradient(135deg,#F8FAFC_0%,#F5F3FF_100%)]">
       <div className="pointer-events-none absolute right-0 top-0 hidden h-[420px] w-[540px] opacity-60 lg:block">
         <div className="h-full w-full bg-[linear-gradient(#E2E8F0_1px,transparent_1px),linear-gradient(90deg,#E2E8F0_1px,transparent_1px)] [background-size:48px_48px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(16,185,129,0.18),transparent_26%),linear-gradient(90deg,rgba(248,250,252,0.96),rgba(248,250,252,0.42))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(124,58,237,0.12),transparent_26%),linear-gradient(90deg,rgba(248,250,252,0.96),rgba(248,250,252,0.42))]" />
       </div>
 
       <div className="relative">
@@ -1340,7 +1334,7 @@ function Services({ content: t }: ContentProps) {
             const Icon = tech?.icon ?? Code2;
             return (
               <span key={name} className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-slatecopy shadow-sm">
-                <Icon size={15} style={{ color: tech?.color ?? "#10B981" }} />
+                <Icon size={15} style={{ color: tech?.color ?? "#6D28D9" }} />
                 {name}
               </span>
             );
@@ -1369,17 +1363,16 @@ function ServiceCard({
   return (
     <motion.article
       whileHover={{ y: -6 }}
-      className={`group relative min-h-[290px] overflow-hidden rounded-[24px] border border-line bg-white p-7 shadow-soft transition hover:-translate-y-1 hover:border-accent/25 hover:shadow-[0_10px_30px_rgba(15,23,42,.06),0_0_0_1px_rgba(20,184,166,.08)] ${
-        service.featured ? "lg:col-span-2" : ""
-      }`}
+      className={`group relative min-h-[290px] overflow-hidden rounded-[24px] border border-line bg-white p-7 shadow-soft transition hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_10px_30px_rgba(15,23,42,.06),0_0_0_1px_rgba(124,58,237,.06)] ${service.featured ? "lg:col-span-2" : ""
+        }`}
     >
       <div className="relative z-10">
-        <div className="mb-8 flex items-start gap-4">
-          <span className="grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-line bg-accentSoft text-primary shadow-sm transition group-hover:border-accent/30 group-hover:bg-teal-100">
+        <div className="mb-8 flex items-center gap-4">
+          <span className="grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-lineHover text-primary shadow-sm transition group-hover:border-primary/30 group-hover:bg-surfaceSoft">
             <Icon size={28} />
           </span>
           {service.label ? (
-            <span className="mt-1 rounded-full border border-accent/20 bg-accentSoft px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-accentHover">
+            <span className="inline-flex h-8 items-center rounded-full border border-lineHover bg-surfaceAlt px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-primary shadow-sm">
               {service.label}
             </span>
           ) : null}
@@ -1401,7 +1394,7 @@ function ServiceCard({
 function ServiceCubes() {
   return (
     <div className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-1/2 opacity-70 lg:block">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(16,185,129,0.18),transparent_34%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(124,58,237,0.12),transparent_34%)]" />
       <svg className="absolute inset-0 h-full w-full text-brand/30" viewBox="0 0 320 260" fill="none" aria-hidden="true">
         <path d="M62 188 160 132l96 56M160 132V36M160 132v92M62 188v-82l98-56 96 56v82" stroke="currentColor" strokeWidth="1.4" />
         <path d="M160 36 98 72v70l62 36 62-36V72l-62-36Z" fill="url(#cubeA)" stroke="currentColor" strokeWidth="1.4" />
@@ -1409,16 +1402,16 @@ function ServiceCubes() {
         <path d="M222 142 160 178v40l62 36 62-36v-40l-62-36Z" fill="url(#cubeC)" stroke="currentColor" strokeWidth="1.4" />
         <defs>
           <linearGradient id="cubeA" x1="98" x2="222" y1="36" y2="178">
-            <stop stopColor="#F0FDF4" />
-            <stop offset="1" stopColor="#99F6E4" stopOpacity="0.7" />
+            <stop stopColor="#F5F3FF" />
+            <stop offset="1" stopColor="#A78BFA" stopOpacity="0.7" />
           </linearGradient>
           <linearGradient id="cubeB" x1="36" x2="160" y1="142" y2="254">
             <stop stopColor="#FFFFFF" />
-            <stop offset="1" stopColor="#CCFBF1" />
+            <stop offset="1" stopColor="#E9D5FF" />
           </linearGradient>
           <linearGradient id="cubeC" x1="160" x2="284" y1="142" y2="254">
             <stop stopColor="#FFFFFF" />
-            <stop offset="1" stopColor="#CCFBF1" />
+            <stop offset="1" stopColor="#E9D5FF" />
           </linearGradient>
         </defs>
       </svg>
@@ -1436,19 +1429,19 @@ function Method({ content: t }: ContentProps) {
     : ["Alineación y claridad", "Cimientos sólidos", "Entregas con valor", "Estabilidad y confianza", "Crecimiento sostenible"];
   const bullets = isEnglish
     ? [
-        ["Business analysis", "Process mapping", "KPI definition"],
-        ["Architecture design", "Technology selection", "Technical roadmap"],
-        ["Iterative sprints", "Clean implementation", "Continuous feedback"],
-        ["Secure deployment", "Monitoring", "Technical documentation"],
-        ["Metric analysis", "Continuous improvement", "Scalability"],
-      ]
+      ["Business analysis", "Process mapping", "KPI definition"],
+      ["Architecture design", "Technology selection", "Technical roadmap"],
+      ["Iterative sprints", "Clean implementation", "Continuous feedback"],
+      ["Secure deployment", "Monitoring", "Technical documentation"],
+      ["Metric analysis", "Continuous improvement", "Scalability"],
+    ]
     : [
-        ["Análisis de negocio", "Mapeo de procesos", "Definición de KPIs"],
-        ["Diseño de arquitectura", "Selección tecnológica", "Roadmap técnico"],
-        ["Sprints iterativos", "Código limpio", "Feedback constante"],
-        ["Despliegue seguro", "Monitoreo", "Documentación técnica"],
-        ["Análisis de métricas", "Mejora continua", "Escalabilidad"],
-      ];
+      ["Análisis de negocio", "Mapeo de procesos", "Definición de KPIs"],
+      ["Diseño de arquitectura", "Selección tecnológica", "Roadmap técnico"],
+      ["Sprints iterativos", "Código limpio", "Feedback constante"],
+      ["Despliegue seguro", "Monitoreo", "Documentación técnica"],
+      ["Análisis de métricas", "Mejora continua", "Escalabilidad"],
+    ];
 
   const scrollMethod = (index: number) => {
     const target = methodCarouselRef.current;
@@ -1466,8 +1459,8 @@ function Method({ content: t }: ContentProps) {
       <SectionIntro title={t.method.title} text={t.method.intro} />
 
       <div className="relative mt-10 rounded-[24px] border border-line bg-white p-4 shadow-soft lg:mt-14 lg:p-8">
-        <div className="pointer-events-none absolute inset-0 rounded-[24px] bg-[radial-gradient(circle_at_top,rgba(20,184,166,.06),transparent_38%)]" />
-        <svg className="pointer-events-none absolute inset-x-10 top-24 hidden h-72 text-accent/30 lg:block" viewBox="0 0 1000 260" fill="none" preserveAspectRatio="none" aria-hidden="true">
+        <div className="pointer-events-none absolute inset-0 rounded-[24px] bg-[radial-gradient(circle_at_top,rgba(124,58,237,.08),transparent_38%)]" />
+        <svg className="pointer-events-none absolute inset-x-10 top-24 hidden h-72 text-primary/25 lg:block" viewBox="0 0 1000 260" fill="none" preserveAspectRatio="none" aria-hidden="true">
           <path d="M20 72 C 165 20, 245 222, 390 168 S 620 35, 760 104 S 890 205, 980 150" stroke="currentColor" strokeWidth="3" strokeDasharray="9 12" strokeLinecap="round" />
         </svg>
         <div
@@ -1486,11 +1479,11 @@ function Method({ content: t }: ContentProps) {
               <motion.article
                 key={step.title}
                 data-method-slide
-                className={`relative flex min-h-[430px] w-[82vw] shrink-0 snap-center flex-col rounded-[24px] border border-line bg-white p-5 shadow-soft transition hover:border-accent/25 sm:w-[360px] lg:min-h-[510px] lg:w-auto ${offset}`}
+                className={`relative flex min-h-[430px] w-[82vw] shrink-0 snap-center flex-col rounded-[24px] border border-line bg-white p-5 shadow-soft transition hover:border-primary/20 sm:w-[360px] lg:min-h-[510px] lg:w-auto ${offset}`}
                 whileHover={{ y: -6 }}
               >
                 <div className="mb-5 flex items-center justify-between">
-                  <span className="grid h-12 w-12 place-items-center rounded-xl border border-line bg-accentSoft text-primary">
+                  <span className="grid h-12 w-12 place-items-center rounded-xl border border-lineHover bg-primaryUltraSoft text-primary">
                     <Icon size={24} />
                   </span>
                   <span className="rounded-full border border-line bg-surfaceAlt px-3 py-1 text-xs font-semibold text-primary">
@@ -1503,12 +1496,12 @@ function Method({ content: t }: ContentProps) {
                 <ul className="space-y-2">
                   {bullets[index].map((item) => (
                     <li key={item} className="flex items-center gap-2 text-xs font-medium text-slatecopy">
-                      <CheckCircle2 size={15} className="shrink-0 text-accentHover" />
+                      <CheckCircle2 size={15} className="shrink-0 text-primary" />
                       {item}
                     </li>
                   ))}
                 </ul>
-                <div className="mt-auto rounded-lg border border-accent/15 bg-accentSoft px-3 py-2 text-center text-xs font-semibold text-accentHover">
+                <div className="mt-auto rounded-lg border border-primary bg-primary px-3 py-2 text-center text-xs font-bold text-white shadow-sm">
                   {badges[index]}
                 </div>
               </motion.article>
@@ -1516,39 +1509,45 @@ function Method({ content: t }: ContentProps) {
           })}
         </div>
         <div className="mt-5 flex items-center justify-center gap-3 lg:hidden">
-          <button className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-accentHover shadow-sm" onClick={() => scrollMethod(activeMethod - 1)} aria-label="Previous methodology step">
+          <button className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-primary shadow-sm" onClick={() => scrollMethod(activeMethod - 1)} aria-label="Previous methodology step">
             <ChevronLeft size={17} />
           </button>
           <div className="flex items-center gap-2 rounded-full border border-line bg-white px-3 py-2 shadow-sm">
             {t.method.steps.map((step, index) => (
               <button
                 key={step.title}
-                className={`h-2 rounded-full transition-all ${activeMethod === index ? "w-6 bg-accentHover" : "w-2 bg-slate-300"}`}
+                className={`h-2 rounded-full transition-all ${activeMethod === index ? "w-6 bg-primary" : "w-2 bg-slate-300"}`}
                 onClick={() => scrollMethod(index)}
                 aria-label={`Go to ${step.title}`}
               />
             ))}
           </div>
-          <button className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-accentHover shadow-sm" onClick={() => scrollMethod(activeMethod + 1)} aria-label="Next methodology step">
+          <button className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-primary shadow-sm" onClick={() => scrollMethod(activeMethod + 1)} aria-label="Next methodology step">
             <ChevronRight size={17} />
           </button>
         </div>
         <div className="hidden h-20 lg:block" />
       </div>
 
-      <div className="mx-auto mt-8 grid max-w-5xl gap-5 rounded-[24px] border border-line bg-white p-5 shadow-soft lg:grid-cols-[0.35fr_1fr_0.32fr] lg:items-center">
-        <div className="flex items-center gap-3">
-          <span className="grid h-14 w-14 place-items-center rounded-lg bg-accentSoft text-primary">
+      <div className="mx-auto mt-8 grid max-w-6xl gap-6 overflow-hidden rounded-[24px] border border-line bg-white p-5 shadow-soft lg:grid-cols-[0.42fr_1fr_0.28fr] lg:items-stretch lg:p-6">
+        <div className="relative flex items-center gap-4 rounded-2xl border border-lineHover bg-[linear-gradient(135deg,#F5F3FF_0%,#FFFFFF_100%)] p-5">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(124,58,237,.12),transparent_36%)]" />
+          <span className="relative grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-primary text-white shadow-glow">
             <TargetIcon />
           </span>
-          <p className="text-lg font-semibold text-ink">{isEnglish ? "Outcome-centered execution" : "Enfoque centrado en resultados"}</p>
+          <div className="relative">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{isEnglish ? "Method" : "Método"}</p>
+            <p className="mt-1 text-xl font-semibold leading-tight text-ink">{isEnglish ? "Outcome-centered execution" : "Enfoque centrado en resultados"}</p>
+          </div>
         </div>
-        <p className="border-line text-sm leading-6 text-slatecopy lg:border-l lg:border-r lg:px-6">
-          {isEnglish
-            ? "Each stage is designed to reduce risk, maximize value and make technology a real growth driver."
-            : "Cada etapa está diseñada para reducir riesgos, maximizar valor y asegurar que la tecnología sea un verdadero impulsor de crecimiento."}
-        </p>
-        <a href="#contact" className="button-primary px-4 py-3">
+        <div className="flex items-center rounded-2xl border border-line bg-mist p-5 lg:px-7">
+          <p className="text-sm leading-7 text-slatecopy">
+            {isEnglish
+              ? "Each stage is designed to reduce risk, maximize value and make technology a real growth driver."
+              : "Cada etapa está diseñada para reducir riesgos, maximizar valor y asegurar que la tecnología sea un verdadero impulsor de crecimiento."}
+          </p>
+        </div>
+        <a href="#contact" className="button-primary px-4 py-3 lg:self-center">
           {t.hero.secondaryCta}
           <ArrowUpRight size={17} />
         </a>
@@ -1571,7 +1570,7 @@ function TargetIcon() {
 function FinalCta({ content: t }: ContentProps) {
   return (
     <section id="contact" className="relative overflow-hidden bg-primary px-5 py-20 text-white lg:px-8">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(20,184,166,.16),transparent_34%),linear-gradient(180deg,#111827_0%,#0F172A_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(217,70,239,.18),transparent_34%),linear-gradient(180deg,#6D28D9_0%,#4C1D95_100%)]" />
       <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div>
           <h2 className="max-w-4xl text-4xl font-semibold leading-tight md:text-5xl">{t.finalCta.title}</h2>
@@ -1668,8 +1667,15 @@ function Section({
 
 function SectionIntro({ title, text }: { title: string; text?: string }) {
   return (
-    <div className="max-w-3xl">
-      <h2 className="text-4xl font-semibold leading-tight text-ink md:text-5xl">{title}</h2>
+    <div className="section-intro relative max-w-4xl lg:pl-6">
+      <div className="pointer-events-none absolute left-0 top-1 hidden h-full w-[3px] rounded-full bg-gradient-to-b from-primary via-primarySoft to-transparent lg:block" aria-hidden="true" />
+      <div className="pointer-events-none absolute -left-4 top-3 hidden h-20 w-20 rounded-full bg-primaryUltraSoft/75 blur-2xl lg:block" aria-hidden="true" />
+      <h2 className="relative isolate text-4xl font-semibold leading-tight text-ink md:text-5xl">
+        <span className="relative inline">
+          <span className="pointer-events-none absolute inset-x-0 bottom-1 -z-10 h-4 rounded-full bg-primaryUltraSoft/80" aria-hidden="true" />
+          {title}
+        </span>
+      </h2>
       {text ? <p className="mt-5 text-lg leading-8 text-slatecopy">{text}</p> : null}
     </div>
   );

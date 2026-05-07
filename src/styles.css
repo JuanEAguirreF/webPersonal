@@ -36,12 +36,27 @@ a {
     @apply grid h-11 w-11 place-items-center rounded-lg border border-line bg-white text-ink shadow-sm transition hover:-translate-y-0.5 hover:border-accent/25 hover:text-accentHover hover:shadow-soft;
   }
 
+  .project-arrow-button {
+    @apply grid h-11 w-11 place-items-center rounded-lg border border-line bg-white text-ink shadow-sm transition hover:border-accent/25 hover:text-accentHover hover:shadow-soft;
+  }
+
   .contact-link {
     @apply flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-white;
+  }
+
+  .touch-carousel {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  .touch-carousel::-webkit-scrollbar {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

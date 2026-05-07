@@ -29,9 +29,9 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
-import type { MotionValue } from "framer-motion";
-import type { ElementType, PointerEvent, ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import type { MotionValue, PanInfo } from "framer-motion";
+import type { ElementType, PointerEvent, ReactNode, TouchEvent, UIEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FaAws } from "react-icons/fa";
 import {
   SiCloudflare,
@@ -146,8 +146,9 @@ const techIcons: Record<string, { icon: ElementType; color: string }> = {
 };
 
 function App() {
-  const { locale, setLocale } = usePreferredLocale();
+  const { browserLocale, locale, setLocale } = usePreferredLocale();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [languageNoticeDismissed, setLanguageNoticeDismissed] = useState(false);
   const t = content[locale];
   const navIds = useMemo(() => t.nav.map(slug), [t.nav]);
   const activeSection = useActiveSection(navIds);
@@ -174,6 +175,14 @@ function App() {
         menuOpen={menuOpen}
         onMenuToggle={() => setMenuOpen((open) => !open)}
         onLocaleChange={setLanguage}
+      />
+      <LanguageNotice
+        currentLocale={locale}
+        browserLocale={browserLocale}
+        spanishRegion={spanishRegion}
+        dismissed={languageNoticeDismissed || browserLocale === locale}
+        onDismiss={() => setLanguageNoticeDismissed(true)}
+        onSwitch={() => setLanguage(browserLocale)}
       />
       <AnimatePresence mode="wait">
         <motion.main
@@ -293,11 +302,11 @@ function LanguageToggle({
   onLocaleChange: (locale: Locale) => void;
 }) {
   return (
-    <div className="flex rounded-lg border border-line bg-white p-1 shadow-sm" aria-label="Language selector">
+    <div className="inline-flex w-fit max-w-full rounded-lg border border-line bg-white p-1 shadow-sm" aria-label="Language selector">
       {(["es", "en"] as Locale[]).map((item) => (
         <button
           key={item}
-          className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold uppercase transition ${
+          className={`inline-flex min-w-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold uppercase transition sm:px-3 ${
             locale === item ? "bg-primary text-white" : "text-slatecopy hover:text-accentHover"
           }`}
           onClick={() => onLocaleChange(item)}
@@ -306,6 +315,60 @@ function LanguageToggle({
           {item.toUpperCase()}
         </button>
       ))}
+    </div>
+  );
+}
+
+function LanguageNotice({
+  currentLocale,
+  browserLocale,
+  spanishRegion,
+  dismissed,
+  onDismiss,
+  onSwitch,
+}: {
+  currentLocale: Locale;
+  browserLocale: Locale;
+  spanishRegion: string;
+  dismissed: boolean;
+  onDismiss: () => void;
+  onSwitch: () => void;
+}) {
+  if (dismissed || currentLocale === browserLocale) {
+    return null;
+  }
+
+  const copy =
+    browserLocale === "en"
+      ? {
+          message: "This site is also available in English, matching your browser language.",
+          action: "Switch to English",
+          close: "Dismiss language suggestion",
+        }
+      : {
+          message: "Este sitio también está disponible en español, según el idioma de tu navegador.",
+          action: "Cambiar a español",
+          close: "Cerrar sugerencia de idioma",
+        };
+
+  return (
+    <div className="sticky top-[73px] z-40 border-b border-line bg-white/95 px-5 py-3 shadow-sm backdrop-blur-xl lg:top-[81px] lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-mist">
+            <FlagMark country={browserLocale === "en" ? "US" : spanishRegion} />
+          </span>
+          <p className="text-sm font-medium leading-5 text-slatecopy">{copy.message}</p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <button className="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primaryHover" onClick={onSwitch}>
+            {copy.action}
+          </button>
+          <button className="icon-button h-9 w-9" onClick={onDismiss} aria-label={copy.close}>
+            <X size={16} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -397,7 +460,7 @@ function Hero({ content: t }: ContentProps) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.65, ease: "easeOut" }}
           style={{ x: panelX, y: panelY, rotate: panelRotate }}
-          className="relative"
+          className="relative hidden lg:block"
         >
           <motion.div style={{ y: heroPanelScroll }}>
             <ArchitecturePanel title={t.hero.panelTitle} items={t.hero.panelItems} dotsY={heroDotsScroll} />
@@ -602,6 +665,10 @@ function Projects({ content: t }: ContentProps) {
   const [activeGroup, setActiveGroup] = useState(0);
   const [activeProject, setActiveProject] = useState(0);
   const [projectDirection, setProjectDirection] = useState(1);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [groupScrollHint, setGroupScrollHint] = useState(true);
+  const [activeMobileProject, setActiveMobileProject] = useState(0);
+  const mobileProjectsRef = useRef<HTMLDivElement>(null);
   const active = t.projects.groups[activeGroup] ?? t.projects.groups[0];
   const project = active.projects[activeProject] ?? active.projects[0];
   const previousProject = active.projects[(activeProject - 1 + active.projects.length) % active.projects.length];
@@ -613,6 +680,8 @@ function Projects({ content: t }: ContentProps) {
     setProjectDirection(1);
     setActiveGroup(index);
     setActiveProject(0);
+    setActiveMobileProject(0);
+    requestAnimationFrame(() => mobileProjectsRef.current?.scrollTo({ left: 0, behavior: "smooth" }));
   };
 
   const moveProject = (direction: number) => {
@@ -620,9 +689,46 @@ function Projects({ content: t }: ContentProps) {
     setActiveProject((current) => (current + direction + active.projects.length) % active.projects.length);
   };
 
+  const handleProjectDragEnd = (_event: unknown, info: PanInfo) => {
+    if (Math.abs(info.offset.x) < 60) return;
+    moveProject(info.offset.x < 0 ? 1 : -1);
+  };
+
+  const handleProjectTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    if (touchStartX === null) return;
+    const delta = event.changedTouches[0].clientX - touchStartX;
+    setTouchStartX(null);
+    if (Math.abs(delta) < 44) return;
+    moveProject(delta < 0 ? 1 : -1);
+  };
+
   const chooseProject = (index: number) => {
     setProjectDirection(index >= activeProject ? 1 : -1);
     setActiveProject(index);
+  };
+
+  const handleGroupScroll = (event: UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget;
+    setGroupScrollHint(target.scrollLeft + target.clientWidth < target.scrollWidth - 8);
+  };
+
+  const scrollMobileProject = (index: number) => {
+    const target = mobileProjectsRef.current;
+    if (!target) return;
+    const clampedIndex = (index + active.projects.length) % active.projects.length;
+    const slide = target.querySelector<HTMLElement>("[data-project-slide]");
+    const gap = 16;
+    const slideWidth = slide?.offsetWidth ?? target.clientWidth;
+    target.scrollTo({ left: clampedIndex * (slideWidth + gap), behavior: "smooth" });
+    setActiveMobileProject(clampedIndex);
+  };
+
+  const handleMobileProjectScroll = (event: UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget;
+    const slide = target.querySelector<HTMLElement>("[data-project-slide]");
+    const gap = 16;
+    const slideWidth = slide?.offsetWidth ?? target.clientWidth;
+    setActiveMobileProject(Math.min(active.projects.length - 1, Math.max(0, Math.round(target.scrollLeft / (slideWidth + gap)))));
   };
 
   return (
@@ -630,11 +736,15 @@ function Projects({ content: t }: ContentProps) {
       <SectionIntro title={t.projects.title} text={t.projects.intro} />
 
       <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex gap-3 overflow-x-auto pb-1">
+        <div className="relative -mx-5 sm:mx-0">
+        <div
+          className="touch-carousel flex max-w-full gap-2 overflow-x-auto px-5 pb-2 pr-16 sm:gap-3 sm:px-0 sm:pr-0"
+          onScroll={handleGroupScroll}
+        >
           {t.projects.groups.map((group, index) => (
             <button
               key={group.title}
-              className={`shrink-0 rounded-lg border px-5 py-3 text-sm font-semibold transition ${
+              className={`max-w-[76vw] shrink-0 truncate rounded-lg border px-4 py-3 text-sm font-semibold transition sm:max-w-none sm:px-5 ${
                 activeGroup === index
                   ? "border-brand/50 bg-brandSoft text-brand shadow-sm"
                   : "border-line bg-white text-slatecopy hover:border-brand hover:text-brand"
@@ -646,13 +756,60 @@ function Projects({ content: t }: ContentProps) {
             </button>
           ))}
         </div>
+        <div
+          className={`pointer-events-none absolute inset-y-0 right-0 flex w-20 items-center justify-end bg-gradient-to-l from-white via-white/90 to-transparent pr-4 transition-opacity sm:hidden ${
+            groupScrollHint ? "opacity-100" : "opacity-0"
+          }`}
+          aria-hidden="true"
+        >
+          <span className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-accentHover shadow-sm">
+            <ChevronRight size={18} />
+          </span>
+        </div>
+        </div>
       </div>
 
-      <div className="mt-8 overflow-hidden">
+      <div className="mt-8 lg:hidden">
+        <div
+          ref={mobileProjectsRef}
+          className="touch-carousel -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2"
+          onScroll={handleMobileProjectScroll}
+        >
+          {active.projects.map((item, index) => (
+            <ProjectMobileCard key={item.name} project={item} groupTitle={active.title} index={index} labels={labels} />
+          ))}
+        </div>
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <button className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-accentHover shadow-sm" onClick={() => scrollMobileProject(activeMobileProject - 1)} aria-label="Previous project">
+            <ChevronLeft size={17} />
+          </button>
+          <div className="flex items-center gap-2 rounded-full border border-line bg-white px-3 py-2 shadow-sm">
+            {active.projects.map((item, index) => (
+              <button
+                key={item.name}
+                className={`h-2 rounded-full transition-all ${activeMobileProject === index ? "w-6 bg-brand" : "w-2 bg-slate-300"}`}
+                onClick={() => scrollMobileProject(index)}
+                aria-label={`Go to ${item.name}`}
+              />
+            ))}
+          </div>
+          <button className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-accentHover shadow-sm" onClick={() => scrollMobileProject(activeMobileProject + 1)} aria-label="Next project">
+            <ChevronRight size={17} />
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-8 hidden overflow-hidden lg:block">
         <AnimatePresence mode="wait" custom={projectDirection}>
           <motion.div
             key={`${active.title}-${project.name}`}
             custom={projectDirection}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.08}
+            onDragEnd={handleProjectDragEnd}
+            onTouchStart={(event) => setTouchStartX(event.touches[0].clientX)}
+            onTouchEnd={handleProjectTouchEnd}
             initial="enter"
             animate="center"
             exit="exit"
@@ -679,7 +836,7 @@ function Projects({ content: t }: ContentProps) {
             transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
           >
-            <div className="relative min-h-[610px] lg:min-h-[560px]">
+            <div className="relative lg:min-h-[560px]">
               <button
                 className="absolute left-0 top-16 z-10 hidden w-[255px] text-left opacity-50 blur-[0.8px] transition duration-300 hover:-translate-x-1 hover:opacity-75 hover:blur-0 lg:block xl:w-[285px]"
                 onClick={() => moveProject(-1)}
@@ -699,14 +856,14 @@ function Projects({ content: t }: ContentProps) {
               </div>
 
               <button
-                className="icon-button absolute left-[calc(50%-520px)] top-[45%] z-40 hidden -translate-y-1/2 lg:grid"
+                className="project-arrow-button absolute left-[calc(50%-520px)] top-[45%] z-40 hidden -translate-y-1/2 bg-white/95 lg:grid"
                 onClick={() => moveProject(-1)}
                 aria-label="Previous project"
               >
                 <ChevronLeft size={20} />
               </button>
               <button
-                className="icon-button absolute right-[calc(50%-520px)] top-[45%] z-40 hidden -translate-y-1/2 lg:grid"
+                className="project-arrow-button absolute right-[calc(50%-520px)] top-[45%] z-40 hidden -translate-y-1/2 bg-white/95 lg:grid"
                 onClick={() => moveProject(1)}
                 aria-label="Next project"
               >
@@ -722,11 +879,11 @@ function Projects({ content: t }: ContentProps) {
               </button>
             </div>
 
-            <div className="mt-4 flex items-center justify-center gap-3">
-              <button className="icon-button" onClick={() => moveProject(-1)} aria-label="Previous project">
+            <div className="mt-2 flex items-center justify-center gap-3 lg:mt-4">
+              <button className="project-arrow-button hidden lg:grid" onClick={() => moveProject(-1)} aria-label="Previous project">
                 <ChevronLeft size={18} />
               </button>
-              <div className="flex items-center gap-2 rounded-full border border-line bg-white px-4 py-3 shadow-sm">
+              <div className="flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2.5 shadow-sm lg:py-3">
                 {active.projects.map((item, index) => (
                   <button
                     key={item.name}
@@ -738,7 +895,7 @@ function Projects({ content: t }: ContentProps) {
                   />
                 ))}
               </div>
-              <button className="icon-button" onClick={() => moveProject(1)} aria-label="Next project">
+              <button className="project-arrow-button hidden lg:grid" onClick={() => moveProject(1)} aria-label="Next project">
                 <ChevronRight size={18} />
               </button>
             </div>
@@ -792,6 +949,50 @@ function ProjectPeek({ project, index, side }: { project: { name: string; proble
   );
 }
 
+function ProjectMobileCard({
+  project,
+  groupTitle,
+  index,
+  labels,
+}: {
+  project: { name: string; impact: string };
+  groupTitle: string;
+  index: number;
+  labels: [string, string, string];
+}) {
+  const Icon = [Building2, Users, BarChart3, Workflow, FileCode2][index % 5];
+
+  return (
+    <article
+      data-project-slide
+      className="relative flex min-h-[310px] w-[82vw] shrink-0 snap-center flex-col rounded-[24px] border border-line bg-white p-5 shadow-soft sm:w-[360px]"
+    >
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-line bg-accentSoft text-primary">
+          <Icon size={23} />
+        </span>
+        <span className="rounded-full border border-line bg-surfaceAlt px-3 py-1 text-xs font-semibold text-primary">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      </div>
+      <span className="mb-3 w-fit max-w-full truncate rounded-md bg-brandSoft px-2 py-1 text-xs font-semibold text-brand">
+        {groupTitle}
+      </span>
+      <h3 className="text-2xl font-semibold leading-tight text-ink">{project.name}</h3>
+      <div className="my-5 h-px bg-divider" />
+      <div className="mt-auto">
+        <div className="mb-3 flex items-center gap-2">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-600">
+            <TrendingUp size={16} />
+          </span>
+          <p className="text-base font-semibold text-ink">{labels[2]}</p>
+        </div>
+        <p className="text-sm leading-6 text-slatecopy">{project.impact}</p>
+      </div>
+    </article>
+  );
+}
+
 function ProjectShowcase({
   project,
   groupTitle,
@@ -809,31 +1010,31 @@ function ProjectShowcase({
   const tech = ["Node", "TS", "API", "React", "+2"];
 
   return (
-    <article className="overflow-hidden rounded-lg border border-line bg-white p-6 shadow-soft">
+    <article className="mx-auto max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-lg border border-line bg-white p-5 shadow-soft sm:max-w-none sm:p-6">
       <div className="grid gap-7 lg:grid-cols-[0.82fr_1.18fr]">
         <div>
-          <div className="flex items-start gap-4">
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand to-violet text-white shadow-glow">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand to-violet text-white shadow-glow sm:h-14 sm:w-14">
               <Icon size={24} />
             </span>
-            <div>
-              <h3 className="text-3xl font-semibold leading-tight text-ink">{project.name}</h3>
+            <div className="min-w-0">
+              <h3 className="text-2xl font-semibold leading-tight text-ink sm:text-3xl">{project.name}</h3>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-slatecopy">
-                <span className="rounded-md bg-brandSoft px-2 py-1 text-brand">{groupTitle}</span>
-                <span>·</span>
-                <span>{isEnglish ? "Production logic" : "Lógica productiva"}</span>
+                <span className="max-w-full truncate rounded-md bg-brandSoft px-2 py-1 text-brand">{groupTitle}</span>
+                <span className="hidden sm:inline">·</span>
+                <span className="hidden sm:inline">{isEnglish ? "Production logic" : "Lógica productiva"}</span>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 space-y-5">
-            <ProjectStatement icon={<Bot size={16} />} label={labels[0]} text={project.problem} tone="violet" />
-            <ProjectStatement icon={<MapPin size={16} />} label={labels[1]} text={project.solution} tone="brand" />
+          <div className="mt-7 space-y-5 sm:mt-8">
+            <ProjectStatement icon={<Bot size={16} />} label={labels[0]} text={project.problem} tone="violet" mobileHidden />
+            <ProjectStatement icon={<MapPin size={16} />} label={labels[1]} text={project.solution} tone="brand" mobileHidden />
             <ProjectStatement icon={<TrendingUp size={16} />} label={labels[2]} text={project.impact} tone="green" compact />
           </div>
         </div>
 
-        <div className="grid gap-4">
+        <div className="hidden gap-4 lg:grid">
           <div className="flex flex-wrap items-center justify-end gap-2">
             {tech.map((item, itemIndex) => (
               <span key={item} className="grid h-10 min-w-10 place-items-center rounded-lg border border-line bg-mist px-3 text-xs font-semibold text-brand">
@@ -903,17 +1104,19 @@ function ProjectStatement({
   text,
   tone,
   compact,
+  mobileHidden,
 }: {
   icon: ReactNode;
   label: string;
   text: string;
   tone: "brand" | "violet" | "green";
   compact?: boolean;
+  mobileHidden?: boolean;
 }) {
   const color = tone === "green" ? "bg-emerald-100 text-emerald-600" : tone === "violet" ? "bg-violet/10 text-violet" : "bg-brandSoft text-brand";
 
   return (
-    <div className="border-t border-line pt-5 first:border-t-0 first:pt-0">
+    <div className={`border-t border-line pt-5 first:border-t-0 first:pt-0 ${mobileHidden ? "hidden lg:block" : ""}`}>
       <div className="flex items-center gap-3">
         <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full ${color}`}>{icon}</span>
         <p className="text-lg font-semibold text-ink">{label}</p>
@@ -992,14 +1195,14 @@ function Stack({ content: t }: ContentProps) {
         {t.stack.groups.map((group, index) => {
           const Icon = icons[index % icons.length];
           return (
-            <article key={group.title} className="rounded-xl border border-line bg-mist p-5 shadow-sm">
+            <article key={group.title} className="min-w-0 rounded-xl border border-line bg-mist p-5 shadow-sm">
               <div className="mb-5 flex items-center gap-3">
                 <span className="grid h-10 w-10 place-items-center rounded-lg bg-white text-brand shadow-sm ring-1 ring-line">
                   <Icon size={20} />
                 </span>
                 <h3 className="text-lg font-semibold text-ink">{group.title}</h3>
               </div>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="touch-carousel -mx-2 flex min-w-0 max-w-full snap-x snap-mandatory gap-3 overflow-x-auto px-2 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0">
                 {group.items.map((item) => (
                   <TechChip key={item} name={item} />
                 ))}
@@ -1017,7 +1220,7 @@ function TechChip({ name }: { name: string }) {
   const Icon = tech?.icon ?? Code2;
 
   return (
-    <div className="group grid min-h-[96px] place-items-center rounded-xl border border-line bg-white px-3 py-4 text-center shadow-sm transition hover:-translate-y-1 hover:border-brand/40 hover:shadow-soft">
+    <div className="group grid min-h-[96px] w-32 shrink-0 snap-start place-items-center rounded-xl border border-line bg-white px-3 py-4 text-center shadow-sm transition hover:-translate-y-1 hover:border-brand/40 hover:shadow-soft md:w-auto">
       <Icon size={28} style={{ color: tech?.color ?? "#10B981" }} aria-hidden="true" />
       <span className="mt-3 max-w-full rounded-full border border-line bg-mist px-2 py-1 text-[11px] font-semibold leading-4 text-slatecopy transition group-hover:text-ink">
         {name}
@@ -1224,6 +1427,8 @@ function ServiceCubes() {
 }
 
 function Method({ content: t }: ContentProps) {
+  const [activeMethod, setActiveMethod] = useState(0);
+  const methodCarouselRef = useRef<HTMLDivElement>(null);
   const isEnglish = t.meta.location.includes("Peru");
   const methodIcons = [Building2, Layers3, Code2, Cloud, BarChart3];
   const badges = isEnglish
@@ -1245,23 +1450,43 @@ function Method({ content: t }: ContentProps) {
         ["Análisis de métricas", "Mejora continua", "Escalabilidad"],
       ];
 
+  const scrollMethod = (index: number) => {
+    const target = methodCarouselRef.current;
+    if (!target) return;
+    const clampedIndex = Math.min(t.method.steps.length - 1, Math.max(0, index));
+    const slide = target.querySelector<HTMLElement>("[data-method-slide]");
+    const gap = 16;
+    const slideWidth = slide?.offsetWidth ?? target.clientWidth;
+    target.scrollTo({ left: clampedIndex * (slideWidth + gap), behavior: "smooth" });
+    setActiveMethod(clampedIndex);
+  };
+
   return (
     <Section id="metodologia" className="relative overflow-hidden bg-surfaceAlt">
       <SectionIntro title={t.method.title} text={t.method.intro} />
 
-      <div className="relative mt-14 rounded-[24px] border border-line bg-white p-5 shadow-soft lg:p-8">
+      <div className="relative mt-10 rounded-[24px] border border-line bg-white p-4 shadow-soft lg:mt-14 lg:p-8">
         <div className="pointer-events-none absolute inset-0 rounded-[24px] bg-[radial-gradient(circle_at_top,rgba(20,184,166,.06),transparent_38%)]" />
         <svg className="pointer-events-none absolute inset-x-10 top-24 hidden h-72 text-accent/30 lg:block" viewBox="0 0 1000 260" fill="none" preserveAspectRatio="none" aria-hidden="true">
           <path d="M20 72 C 165 20, 245 222, 390 168 S 620 35, 760 104 S 890 205, 980 150" stroke="currentColor" strokeWidth="3" strokeDasharray="9 12" strokeLinecap="round" />
         </svg>
-        <div className="relative grid gap-5 lg:grid-cols-5">
+        <div
+          ref={methodCarouselRef}
+          className="touch-carousel relative -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 lg:mx-0 lg:grid lg:grid-cols-5 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0"
+          onScroll={(event) => {
+            const target = event.currentTarget;
+            const itemWidth = target.scrollWidth / t.method.steps.length;
+            setActiveMethod(Math.min(t.method.steps.length - 1, Math.max(0, Math.round(target.scrollLeft / itemWidth))));
+          }}
+        >
           {t.method.steps.map((step, index) => {
             const Icon = methodIcons[index] ?? Workflow;
             const offset = index % 2 === 0 ? "" : "lg:mt-20";
             return (
               <motion.article
                 key={step.title}
-                className={`relative flex min-h-[510px] flex-col rounded-[24px] border border-line bg-white p-5 shadow-soft transition hover:border-accent/25 ${offset}`}
+                data-method-slide
+                className={`relative flex min-h-[430px] w-[82vw] shrink-0 snap-center flex-col rounded-[24px] border border-line bg-white p-5 shadow-soft transition hover:border-accent/25 sm:w-[360px] lg:min-h-[510px] lg:w-auto ${offset}`}
                 whileHover={{ y: -6 }}
               >
                 <div className="mb-5 flex items-center justify-between">
@@ -1289,6 +1514,24 @@ function Method({ content: t }: ContentProps) {
               </motion.article>
             );
           })}
+        </div>
+        <div className="mt-5 flex items-center justify-center gap-3 lg:hidden">
+          <button className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-accentHover shadow-sm" onClick={() => scrollMethod(activeMethod - 1)} aria-label="Previous methodology step">
+            <ChevronLeft size={17} />
+          </button>
+          <div className="flex items-center gap-2 rounded-full border border-line bg-white px-3 py-2 shadow-sm">
+            {t.method.steps.map((step, index) => (
+              <button
+                key={step.title}
+                className={`h-2 rounded-full transition-all ${activeMethod === index ? "w-6 bg-accentHover" : "w-2 bg-slate-300"}`}
+                onClick={() => scrollMethod(index)}
+                aria-label={`Go to ${step.title}`}
+              />
+            ))}
+          </div>
+          <button className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-accentHover shadow-sm" onClick={() => scrollMethod(activeMethod + 1)} aria-label="Next methodology step">
+            <ChevronRight size={17} />
+          </button>
         </div>
         <div className="hidden h-20 lg:block" />
       </div>

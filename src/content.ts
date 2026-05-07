@@ -117,9 +117,9 @@ export const content: Record<Locale, Content> = {
     },
     nav: ["Sobre mí", "Proyectos", "Experiencia", "Stack", "Servicios", "Metodología"],
     hero: {
-      headline: "Construyo y escalo soluciones digitales que impactan negocio real",
+      headline: "Construyo y escalo soluciones digitales que impactan negocios reales",
       subheadline: "Fullstack Developer especializado en SaaS, automatización y arquitectura web con foco en eficiencia, datos y crecimiento.",
-      metaLine: "Por Juan Aguirre · Lima, Perú · Actualizado el 6 de mayo de 2026",
+      metaLine: "Por Juan Aguirre · Lima, Perú",
       primaryCta: "Ver proyectos",
       secondaryCta: "Contactar",
       indicators: ["10+ años experiencia", "SaaS Builder", "Fullstack + Arquitectura"],
@@ -132,7 +132,7 @@ export const content: Record<Locale, Content> = {
       ],
     },
     about: {
-      title: "Tecnología con propósito para producto, operación e impacto",
+      title: "Tecnología con propósito para tu producto, operación e impacto",
       intro:
         "Una mirada a cómo conecto tecnología, producto y operación para crear soluciones con impacto medible.",
       body: [
@@ -413,7 +413,7 @@ export const content: Record<Locale, Content> = {
     hero: {
       headline: "I build and scale digital solutions that move real business outcomes",
       subheadline: "Fullstack Developer specialized in SaaS, automation and web architecture with a focus on efficiency, data and growth.",
-      metaLine: "By Juan Aguirre · Lima, Peru · Updated May 6, 2026",
+      metaLine: "By Juan Aguirre · Lima, Peru",
       primaryCta: "View projects",
       secondaryCta: "Contact",
       indicators: ["10+ years experience", "SaaS Builder", "Fullstack + Architecture"],

@@ -357,34 +357,38 @@ function Hero({ content: t }: ContentProps) {
       <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-14 pt-14 lg:min-h-[760px] lg:grid-cols-[1fr_0.96fr] lg:gap-12 lg:px-8 lg:pb-20 lg:pt-24">
         <motion.div initial="hidden" animate="visible" variants={stagger} style={{ y: copyY }} className="flex flex-col justify-center">
           <motion.div style={{ y: heroCopyScroll }}>
-          <motion.h1 variants={fadeUp} className="max-w-4xl text-[2.35rem] font-semibold leading-[1.06] tracking-0 text-ink sm:text-5xl md:text-6xl lg:text-[4.6rem]">
-            {t.hero.headline}
-          </motion.h1>
-          <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-lg leading-8 text-slatecopy md:text-xl">
-            {t.hero.subheadline}
-          </motion.p>
-          <motion.div variants={fadeUp} className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a href="#proyectos" className="button-primary">
-              {t.hero.primaryCta}
-              <ArrowUpRight size={18} />
-            </a>
-            <a href="#contact" className="button-secondary">
-              {t.hero.secondaryCta}
-              <Mail size={18} />
-            </a>
-          </motion.div>
-          <motion.div variants={fadeUp} className="mt-12 grid gap-4 sm:grid-cols-3">
-            {t.hero.indicators.map((indicator, index) => {
-              const Icon = [TrendingUp, Cloud, Layers3][index] ?? CheckCircle2;
-              return (
-              <div key={indicator} className="flex items-center gap-3 border-r border-line pr-4 last:border-r-0">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white text-brand shadow-sm ring-1 ring-line">
-                  <Icon size={20} />
-                </span>
-                <span className="text-sm font-semibold leading-5 text-ink">{indicator}</span>
-              </div>
-            )})}
-          </motion.div>
+            <motion.p variants={fadeUp} className="mb-4 text-sm font-medium text-slatecopy">
+              {t.hero.metaLine}
+            </motion.p>
+            <motion.h1 variants={fadeUp} className="max-w-4xl text-[2.35rem] font-semibold leading-[1.06] tracking-0 text-ink sm:text-5xl md:text-6xl lg:text-[4.6rem]">
+              {t.hero.headline}
+            </motion.h1>
+            <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-lg leading-8 text-slatecopy md:text-xl">
+              {t.hero.subheadline}
+            </motion.p>
+            <motion.div variants={fadeUp} className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <a href="#proyectos" className="button-primary">
+                {t.hero.primaryCta}
+                <ArrowUpRight size={18} />
+              </a>
+              <a href="#contact" className="button-secondary">
+                {t.hero.secondaryCta}
+                <Mail size={18} />
+              </a>
+            </motion.div>
+            <motion.div variants={fadeUp} className="mt-12 grid gap-4 sm:grid-cols-3">
+              {t.hero.indicators.map((indicator, index) => {
+                const Icon = [TrendingUp, Cloud, Layers3][index] ?? CheckCircle2;
+                return (
+                  <div key={indicator} className="flex items-center gap-3 border-r border-line pr-4 last:border-r-0">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white text-brand shadow-sm ring-1 ring-line">
+                      <Icon size={20} />
+                    </span>
+                    <span className="text-sm font-semibold leading-5 text-ink">{indicator}</span>
+                  </div>
+                );
+              })}
+            </motion.div>
           </motion.div>
         </motion.div>
 

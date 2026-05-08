@@ -669,8 +669,6 @@ function Projects({ content: t }: ContentProps) {
   const mobileProjectsRef = useRef<HTMLDivElement>(null);
   const active = t.projects.groups[activeGroup] ?? t.projects.groups[0];
   const project = active.projects[activeProject] ?? active.projects[0];
-  const previousProject = active.projects[(activeProject - 1 + active.projects.length) % active.projects.length];
-  const nextProject = active.projects[(activeProject + 1) % active.projects.length];
   const labels: [string, string, string] = t.meta.location.includes("Peru") ? ["Problem", "Solution", "Impact"] : ["Problema", "Solución", "Impacto"];
   const isEnglish = t.meta.location.includes("Peru");
 
@@ -684,7 +682,24 @@ function Projects({ content: t }: ContentProps) {
 
   const moveProject = (direction: number) => {
     setProjectDirection(direction);
-    setActiveProject((current) => (current + direction + active.projects.length) % active.projects.length);
+    const groups = t.projects.groups;
+    let nextGroup = activeGroup;
+    let nextProject = activeProject + direction;
+    const currentProjects = groups[nextGroup]?.projects ?? [];
+
+    if (nextProject >= currentProjects.length) {
+      nextGroup = (nextGroup + 1) % groups.length;
+      nextProject = 0;
+    }
+
+    if (nextProject < 0) {
+      nextGroup = (nextGroup - 1 + groups.length) % groups.length;
+      nextProject = Math.max(0, (groups[nextGroup]?.projects.length ?? 1) - 1);
+    }
+
+    setActiveGroup(nextGroup);
+    setActiveProject(nextProject);
+    setActiveMobileProject(nextProject);
   };
 
   const handleProjectDragEnd = (_event: unknown, info: PanInfo) => {
@@ -795,53 +810,45 @@ function Projects({ content: t }: ContentProps) {
         </div>
       </div>
 
-      <div className="mt-8 hidden overflow-hidden lg:block">
-        <AnimatePresence mode="wait" custom={projectDirection}>
-          <motion.div
-            key={`${active.title}-${project.name}`}
-            custom={projectDirection}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.08}
-            onDragEnd={handleProjectDragEnd}
-            onTouchStart={(event) => setTouchStartX(event.touches[0].clientX)}
-            onTouchEnd={handleProjectTouchEnd}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            variants={{
-              enter: (direction: number) => ({
-                opacity: 0,
-                x: direction > 0 ? 64 : -64,
-                scale: 0.985,
-                filter: "blur(6px)",
-              }),
-              center: {
-                opacity: 1,
-                x: 0,
-                scale: 1,
-                filter: "blur(0px)",
-              },
-              exit: (direction: number) => ({
-                opacity: 0,
-                x: direction > 0 ? -64 : 64,
-                scale: 0.985,
-                filter: "blur(6px)",
-              }),
-            }}
-            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-            className="relative"
-          >
-            <div className="relative lg:min-h-[560px]">
-              <button
-                className="absolute left-0 top-16 z-10 hidden w-[255px] text-left opacity-50 blur-[0.8px] transition duration-300 hover:-translate-x-1 hover:opacity-75 hover:blur-0 lg:block xl:w-[285px]"
-                onClick={() => moveProject(-1)}
-                aria-label="Previous project preview"
+      <div className="mt-8 hidden overflow-visible lg:block">
+        <div className="relative min-h-[610px] overflow-visible" data-project-carousel-stage>
+          <div className="relative z-20 mx-auto h-[590px] max-w-6xl overflow-visible px-8">
+            <AnimatePresence custom={projectDirection} initial={false}>
+              <motion.div
+                key={`${active.title}-${project.name}`}
+                custom={projectDirection}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.08}
+                onDragEnd={handleProjectDragEnd}
+                onTouchStart={(event) => setTouchStartX(event.touches[0].clientX)}
+                onTouchEnd={handleProjectTouchEnd}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                variants={{
+                  enter: (direction: number) => ({
+                    opacity: 0,
+                    x: direction > 0 ? 90 : -90,
+                    scale: 0.992,
+                    filter: "blur(4px)",
+                  }),
+                  center: {
+                    opacity: 1,
+                    x: 0,
+                    scale: 1,
+                    filter: "blur(0px)",
+                  },
+                  exit: (direction: number) => ({
+                    opacity: 0,
+                    x: direction > 0 ? -90 : 90,
+                    scale: 0.992,
+                    filter: "blur(4px)",
+                  }),
+                }}
+                transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-x-8 top-0"
               >
-                <ProjectPeek project={previousProject} index={activeProject - 1} side="left" />
-              </button>
-
-              <div className="relative z-20 mx-auto max-w-5xl px-0 lg:px-8">
                 <ProjectShowcase
                   project={project}
                   groupTitle={active.title}
@@ -849,53 +856,45 @@ function Projects({ content: t }: ContentProps) {
                   labels={labels}
                   isEnglish={isEnglish}
                 />
-              </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-              <button
-                className="project-arrow-button absolute left-[calc(50%-520px)] top-[45%] z-40 hidden -translate-y-1/2 bg-white/95 lg:grid"
-                onClick={() => moveProject(-1)}
-                aria-label="Previous project"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                className="project-arrow-button absolute right-[calc(50%-520px)] top-[45%] z-40 hidden -translate-y-1/2 bg-white/95 lg:grid"
-                onClick={() => moveProject(1)}
-                aria-label="Next project"
-              >
-                <ChevronRight size={20} />
-              </button>
+          <button
+            className="project-arrow-button absolute left-0 top-[44%] z-40 hidden -translate-y-1/2 rounded-full bg-white/95 lg:grid"
+            onClick={() => moveProject(-1)}
+            aria-label="Previous project"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            className="project-arrow-button absolute right-0 top-[44%] z-40 hidden -translate-y-1/2 rounded-full bg-white/95 lg:grid"
+            onClick={() => moveProject(1)}
+            aria-label="Next project"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
 
+        <div className="mt-2 flex items-center justify-center gap-3 lg:mt-4">
+          <button className="project-arrow-button hidden lg:grid" onClick={() => moveProject(-1)} aria-label="Previous project">
+            <ChevronLeft size={18} />
+          </button>
+          <div className="flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2.5 shadow-sm lg:py-3">
+            {active.projects.map((item, index) => (
               <button
-                className="absolute right-0 top-16 z-10 hidden w-[255px] text-left opacity-50 blur-[0.8px] transition duration-300 hover:translate-x-1 hover:opacity-75 hover:blur-0 lg:block xl:w-[285px]"
-                onClick={() => moveProject(1)}
-                aria-label="Next project preview"
-              >
-                <ProjectPeek project={nextProject} index={activeProject + 1} side="right" />
-              </button>
-            </div>
-
-            <div className="mt-2 flex items-center justify-center gap-3 lg:mt-4">
-              <button className="project-arrow-button hidden lg:grid" onClick={() => moveProject(-1)} aria-label="Previous project">
-                <ChevronLeft size={18} />
-              </button>
-              <div className="flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2.5 shadow-sm lg:py-3">
-                {active.projects.map((item, index) => (
-                  <button
-                    key={item.name}
-                    className={`h-2.5 rounded-full transition-all ${activeProject === index ? "w-7 bg-brand" : "w-2.5 bg-slate-300 hover:bg-brand/50"
-                      }`}
-                    onClick={() => chooseProject(index)}
-                    aria-label={`Go to ${item.name}`}
-                  />
-                ))}
-              </div>
-              <button className="project-arrow-button hidden lg:grid" onClick={() => moveProject(1)} aria-label="Next project">
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+                key={item.name}
+                className={`h-2.5 rounded-full transition-all ${activeProject === index ? "w-7 bg-brand" : "w-2.5 bg-slate-300 hover:bg-brand/50"
+                  }`}
+                onClick={() => chooseProject(index)}
+                aria-label={`Go to ${item.name}`}
+              />
+            ))}
+          </div>
+          <button className="project-arrow-button hidden lg:grid" onClick={() => moveProject(1)} aria-label="Next project">
+            <ChevronRight size={18} />
+          </button>
+        </div>
 
       </div>
     </Section>
@@ -1002,90 +1001,37 @@ function ProjectShowcase({
   isEnglish: boolean;
 }) {
   const Icon = [Building2, Users, BarChart3, Workflow, FileCode2][index % 5];
-  const tech = ["Node", "TS", "API", "React", "+2"];
 
   return (
-    <article className="mx-auto max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-lg border border-line bg-white p-5 shadow-soft sm:max-w-none sm:p-6">
-      <div className="grid gap-7 lg:grid-cols-[0.82fr_1.18fr]">
-        <div>
-          <div className="flex items-start gap-3 sm:gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand to-violet text-white shadow-glow sm:h-14 sm:w-14">
-              <Icon size={24} />
+    <article className="mx-auto max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_22px_70px_rgba(15,23,42,.10)] sm:max-w-none">
+      <div className="grid min-h-[560px] lg:grid-cols-[0.38fr_0.62fr]">
+        <div className="relative border-line bg-white p-7 lg:border-r">
+          <div className="flex items-start gap-5">
+            <span className="grid h-[60px] w-[60px] shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary to-primaryHover text-white shadow-glow">
+              <Icon size={27} />
             </span>
             <div className="min-w-0">
-              <h3 className="text-2xl font-semibold leading-tight text-ink sm:text-3xl">{project.name}</h3>
+              <h3 className="text-[1.7rem] font-semibold leading-tight text-ink">{project.name}</h3>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-slatecopy">
-                <span className="max-w-full truncate rounded-md bg-brandSoft px-2 py-1 text-brand">{groupTitle}</span>
+                <span className="max-w-full truncate rounded-md bg-primaryUltraSoft px-3 py-1.5 text-primary">{groupTitle}</span>
                 <span className="hidden sm:inline">·</span>
                 <span className="hidden sm:inline">{isEnglish ? "Production logic" : "Lógica productiva"}</span>
               </div>
             </div>
           </div>
 
-          <div className="mt-7 space-y-5 sm:mt-8">
-            <ProjectStatement icon={<Bot size={16} />} label={labels[0]} text={project.problem} tone="violet" mobileHidden />
-            <ProjectStatement icon={<MapPin size={16} />} label={labels[1]} text={project.solution} tone="brand" mobileHidden />
-            <ProjectStatement icon={<TrendingUp size={16} />} label={labels[2]} text={project.impact} tone="green" compact />
+          <p className="mt-6 max-w-md text-base leading-7 text-slatecopy">{project.impact}</p>
+          <div className="my-5 h-px bg-line" />
+
+          <div className="space-y-0">
+            <ProjectStatement icon={<Bot size={19} />} label={labels[0]} text={project.problem} tone="violet" />
+            <ProjectStatement icon={<CheckCircle2 size={19} />} label={labels[1]} text={project.solution} tone="brand" />
+            <ProjectStatement icon={<TrendingUp size={19} />} label={labels[2]} text={project.impact} tone="green" compact />
           </div>
         </div>
 
-        <div className="hidden gap-4 lg:grid">
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            {tech.map((item, itemIndex) => (
-              <span key={item} className="grid h-10 min-w-10 place-items-center rounded-lg border border-line bg-mist px-3 text-xs font-semibold text-brand">
-                {itemIndex < 4 ? item : item}
-              </span>
-            ))}
-          </div>
-
-          <div className="rounded-lg border border-line bg-mist p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <p className="text-sm font-semibold text-ink">{isEnglish ? "Architecture map" : "Mapa de arquitectura"}</p>
-              <a href="#contact" className="inline-flex items-center gap-1 text-xs font-semibold text-brand">
-                {isEnglish ? "View details" : "Ver detalles"}
-                <ArrowUpRight size={14} />
-              </a>
-            </div>
-            <div className="grid gap-3 md:grid-cols-[0.72fr_0.84fr_1fr_0.84fr] md:items-stretch">
-              <ArchitectureColumn title={isEnglish ? "Channels" : "Canales"} items={["Web", "API", "Chat"]} />
-              <ArchitectureNode title="API Gateway" value="ex" />
-              <ArchitectureColumn title={isEnglish ? "Core Services" : "Servicios Core"} items={isEnglish ? ["Conversations", "Automations", "Analytics"] : ["Conversaciones", "Automatización", "Analítica"]} />
-              <ArchitectureColumn title={isEnglish ? "Data Layer" : "Capa de datos"} items={["PostgreSQL", "Storage", "Events"]} />
-            </div>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-[0.85fr_1.15fr]">
-            <div className="rounded-lg border border-line bg-white p-4">
-              <p className="mb-4 text-sm font-semibold text-ink">{isEnglish ? "Tenants" : "Tenants"}</p>
-              <div className="flex -space-x-2">
-                {["AC", "CL", "PE", "MX", "+12"].map((tenant, itemIndex) => (
-                  <span
-                    key={tenant}
-                    className={`grid h-9 w-9 place-items-center rounded-full border-2 border-white text-[11px] font-semibold ${itemIndex % 3 === 0 ? "bg-brandSoft text-brand" : itemIndex % 3 === 1 ? "bg-violet/10 text-violet" : "bg-accentUltraSoft text-accentHover"
-                      }`}
-                  >
-                    {tenant}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-line bg-white p-4">
-              <p className="mb-4 text-sm font-semibold text-ink">{isEnglish ? "Live overview" : "Vista operativa"}</p>
-              <div className="grid grid-cols-3 gap-3">
-                {[["98.4K", 74], ["32.1K", 58], ["68%", 82]].map(([value, height]) => (
-                  <div key={value} className="rounded-md bg-mist p-3">
-                    <p className="text-sm font-semibold text-ink">{value}</p>
-                    <div className="mt-3 flex h-12 items-end gap-1">
-                      {[44, Number(height), 62, 80].map((bar, barIndex) => (
-                        <span key={barIndex} className="flex-1 rounded-t bg-brand" style={{ height: `${bar}%` }} />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+        <div className="hidden lg:block">
+          <ProjectDiagram projectName={project.name} groupTitle={groupTitle} index={index} isEnglish={isEnglish} />
         </div>
       </div>
     </article>
@@ -1107,17 +1053,231 @@ function ProjectStatement({
   compact?: boolean;
   mobileHidden?: boolean;
 }) {
-  const color = tone === "green" ? "bg-accentUltraSoft text-accentHover" : tone === "violet" ? "bg-violet/10 text-violet" : "bg-brandSoft text-brand";
+  const color = tone === "green" ? "bg-primaryUltraSoft text-primary" : tone === "violet" ? "bg-surfaceAlt text-primary" : "bg-primaryUltraSoft text-primary";
 
   return (
-    <div className={`border-t border-line pt-5 first:border-t-0 first:pt-0 ${mobileHidden ? "hidden lg:block" : ""}`}>
-      <div className="flex items-center gap-3">
-        <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full ${color}`}>{icon}</span>
-        <p className="text-lg font-semibold text-ink">{label}</p>
+    <div className={`border-b border-line py-4 first:pt-0 last:border-b-0 last:pb-0 ${mobileHidden ? "hidden lg:block" : ""}`}>
+      <div className="flex items-start gap-4">
+        <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${color}`}>{icon}</span>
+        <div>
+          <p className="text-base font-semibold text-ink">{label}</p>
+          <p className={`mt-1 text-sm leading-6 text-slatecopy ${compact ? "" : "max-w-md"}`}>{text}</p>
+        </div>
       </div>
-      <p className={`mt-3 text-sm leading-6 text-slatecopy ${compact ? "" : "max-w-md"}`}>{text}</p>
     </div>
   );
+}
+
+function ProjectDiagram({
+  projectName,
+  groupTitle,
+  index,
+  isEnglish,
+}: {
+  projectName: string;
+  groupTitle: string;
+  index: number;
+  isEnglish: boolean;
+}) {
+  const Icon = [Building2, Users, BarChart3, Workflow, FileCode2][index % 5];
+  const nodes = getProjectRelations(projectName, groupTitle, isEnglish);
+  const center = { x: 380, y: 236 };
+  const nodeLayout = [
+    { x: 380, y: 72 },
+    { x: 164, y: 166 },
+    { x: 596, y: 166 },
+    { x: 164, y: 334 },
+    { x: 596, y: 334 },
+    { x: 380, y: 398 },
+  ];
+  const connectorPath = ({ x, y }: { x: number; y: number }) => {
+    const elbowY = Math.abs(x - center.x) < 12 ? y : center.y + (y > center.y ? 44 : -44);
+    return `M ${center.x} ${center.y} L ${center.x} ${elbowY} L ${x} ${elbowY} L ${x} ${y}`;
+  };
+
+  return (
+    <div className="relative h-full min-h-[460px] overflow-hidden bg-[radial-gradient(circle_at_center,rgba(124,58,237,.08),transparent_34%),linear-gradient(135deg,#FFFFFF_0%,#F8FAFC_52%,#F5F3FF_100%)]">
+      <svg className="absolute inset-0 h-full w-full text-primary/25" viewBox="0 0 760 460" fill="none" aria-hidden="true">
+        <defs>
+          <pattern id={`dots-${index}`} width="18" height="18" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="1" fill="currentColor" opacity=".42" />
+          </pattern>
+        </defs>
+        <rect width="760" height="460" fill={`url(#dots-${index})`} opacity=".55" />
+        {nodeLayout.map((point, pointIndex) => (
+          <path key={`line-${pointIndex}`} d={connectorPath(point)} stroke="currentColor" strokeWidth="2" strokeDasharray="6 8" strokeLinecap="round" strokeLinejoin="round" />
+        ))}
+        {nodeLayout.map((point, pointIndex) => (
+          <circle key={`dot-${pointIndex}`} cx={point.x} cy={point.y} r="4" fill="#6D28D9" />
+        ))}
+      </svg>
+
+      <div
+        className="absolute z-20 grid h-28 w-28 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-primary/10 bg-white/80 shadow-[0_18px_52px_rgba(109,40,217,.18)] backdrop-blur"
+        style={{ left: `${(center.x / 760) * 100}%`, top: `${(center.y / 460) * 100}%` }}
+      >
+        <div className="absolute inset-3 rounded-full border border-primary/15" />
+        <div className="absolute inset-6 rounded-full bg-primaryUltraSoft" />
+        <span className="relative grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-primary to-primaryHover text-white shadow-glow">
+          <Icon size={31} />
+        </span>
+      </div>
+
+      {nodes.map((node, nodeIndex) => {
+        const NodeIcon = node.icon;
+        const point = nodeLayout[nodeIndex] ?? center;
+        return (
+          <div
+            key={node.title}
+            className="absolute z-30 w-[178px] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-lineHover bg-white/92 p-4 shadow-soft backdrop-blur-sm"
+            style={{ left: `${(point.x / 760) * 100}%`, top: `${(point.y / 460) * 100}%` }}
+          >
+            <div className="flex items-start gap-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-surfaceAlt text-primary">
+                <NodeIcon size={19} />
+              </span>
+              <div>
+                <p className="text-xs font-bold text-ink">{node.title}</p>
+                <ul className="mt-2 space-y-1">
+                  {node.items.map((item) => (
+                    <li key={item} className="flex items-center gap-1.5 text-[11px] font-medium leading-4 text-slatecopy">
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function getProjectRelations(projectName: string, groupTitle: string, isEnglish: boolean) {
+  const name = projectName.toLowerCase();
+  const group = groupTitle.toLowerCase();
+  const commonIcons = [Bot, DatabaseZap, ShieldCheck, Users, Activity, Cloud];
+
+  if (name.includes("suiza partner")) {
+    return [
+      { title: isEnglish ? "Client portal" : "Portal cliente", items: isEnglish ? ["Payments", "Results", "Tracking"] : ["Pagos", "Resultados", "Seguimiento"], icon: Users },
+      { title: isEnglish ? "Operations" : "Operación", items: isEnglish ? ["Requests", "Status", "Service flow"] : ["Solicitudes", "Estados", "Atenciones"], icon: Workflow },
+      { title: isEnglish ? "Data" : "Datos", items: ["Customers", "Orders", "Reports"], icon: DatabaseZap },
+      { title: isEnglish ? "Access" : "Accesos", items: isEnglish ? ["Roles", "Sessions", "Permissions"] : ["Roles", "Sesiones", "Permisos"], icon: ShieldCheck },
+      { title: isEnglish ? "Experience" : "Experiencia", items: isEnglish ? ["Self-service", "Clarity", "Frictionless"] : ["Autoservicio", "Claridad", "Menos fricción"], icon: Activity },
+      { title: isEnglish ? "Integrations" : "Integraciones", items: ["Web", "API", "Backoffice"], icon: Cloud },
+    ];
+  }
+
+  if (name.includes("historia") || name.includes("health")) {
+    return [
+      { title: isEnglish ? "Clinical flow" : "Flujo clínico", items: isEnglish ? ["Care", "Records", "Orders"] : ["Atención", "Registros", "Órdenes"], icon: FileCode2 },
+      { title: isEnglish ? "Privacy" : "Privacidad", items: isEnglish ? ["Access", "Audit", "Traceability"] : ["Acceso", "Auditoría", "Trazabilidad"], icon: ShieldCheck },
+      { title: isEnglish ? "Data" : "Datos", items: isEnglish ? ["Patients", "History", "Results"] : ["Pacientes", "Historia", "Resultados"], icon: DatabaseZap },
+      { title: isEnglish ? "Users" : "Usuarios", items: isEnglish ? ["Doctors", "Staff", "Admin"] : ["Médicos", "Staff", "Admin"], icon: Users },
+      { title: isEnglish ? "Reports" : "Reportes", items: isEnglish ? ["Indicators", "Exports", "Control"] : ["Indicadores", "Exportes", "Control"], icon: BarChart3 },
+      { title: isEnglish ? "Continuity" : "Continuidad", items: isEnglish ? ["Availability", "Support", "Scale"] : ["Disponibilidad", "Soporte", "Escala"], icon: Activity },
+    ];
+  }
+
+  if (name.includes("citas") || name.includes("appointments")) {
+    return [
+      { title: isEnglish ? "Scheduling" : "Agenda", items: isEnglish ? ["Slots", "Doctors", "Branches"] : ["Horarios", "Médicos", "Sedes"], icon: Clock3 },
+      { title: isEnglish ? "Patients" : "Pacientes", items: isEnglish ? ["Booking", "Reminders", "Status"] : ["Reserva", "Recordatorios", "Estado"], icon: Users },
+      { title: isEnglish ? "Rules" : "Reglas", items: isEnglish ? ["Capacity", "Availability", "Conflicts"] : ["Capacidad", "Disponibilidad", "Cruces"], icon: Workflow },
+      { title: isEnglish ? "Channels" : "Canales", items: ["Web", "Contact center", "CRM"], icon: Bot },
+      { title: isEnglish ? "Metrics" : "Métricas", items: isEnglish ? ["Demand", "No-show", "Conversion"] : ["Demanda", "No-show", "Conversión"], icon: BarChart3 },
+      { title: isEnglish ? "Data" : "Datos", items: ["Appointments", "Users", "Events"], icon: DatabaseZap },
+    ];
+  }
+
+  if (name.includes("android") || name.includes("ios") || name.includes("app suiza")) {
+    return [
+      { title: isEnglish ? "Mobile" : "Mobile", items: ["Android", "iOS", "Stores"], icon: Code2 },
+      { title: isEnglish ? "Compatibility" : "Compatibilidad", items: isEnglish ? ["SDK", "Policies", "Devices"] : ["SDK", "Políticas", "Equipos"], icon: CheckCircle2 },
+      { title: isEnglish ? "Experience" : "Experiencia", items: isEnglish ? ["Flows", "Stability", "Access"] : ["Flujos", "Estabilidad", "Acceso"], icon: Activity },
+      { title: isEnglish ? "Backend" : "Backend", items: ["API", "Auth", "Services"], icon: Cloud },
+      { title: isEnglish ? "Security" : "Seguridad", items: isEnglish ? ["Sessions", "Tokens", "Validation"] : ["Sesiones", "Tokens", "Validación"], icon: ShieldCheck },
+      { title: isEnglish ? "Release" : "Release", items: isEnglish ? ["Builds", "Testing", "Updates"] : ["Builds", "Testing", "Updates"], icon: Workflow },
+    ];
+  }
+
+  if (name.includes("inpe") || name.includes("recorder")) {
+    return [
+      { title: isEnglish ? "Capture" : "Captura", items: isEnglish ? ["Webcam", "Screen", "Audio"] : ["Webcam", "Pantalla", "Audio"], icon: Bot },
+      { title: isEnglish ? "Exam flow" : "Flujo examen", items: isEnglish ? ["Applicant", "Session", "Evidence"] : ["Postulante", "Sesión", "Evidencia"], icon: Users },
+      { title: isEnglish ? "Storage" : "Storage", items: isEnglish ? ["Chunks", "Files", "Retention"] : ["Chunks", "Archivos", "Retención"], icon: DatabaseZap },
+      { title: isEnglish ? "Integrity" : "Integridad", items: isEnglish ? ["Timeline", "Validation", "Audit"] : ["Timeline", "Validación", "Auditoría"], icon: ShieldCheck },
+      { title: isEnglish ? "Monitoring" : "Monitoreo", items: isEnglish ? ["Status", "Errors", "Evidence"] : ["Estado", "Errores", "Evidencia"], icon: Activity },
+      { title: isEnglish ? "Delivery" : "Entrega", items: isEnglish ? ["Review", "Export", "Control"] : ["Revisión", "Exportación", "Control"], icon: FileCode2 },
+    ];
+  }
+
+  if (name.includes("gaugeforms")) {
+    return [
+      { title: isEnglish ? "Forms" : "Formularios", items: isEnglish ? ["Questions", "Logic", "Responses"] : ["Preguntas", "Lógica", "Respuestas"], icon: FileCode2 },
+      { title: isEnglish ? "SaaS core" : "Core SaaS", items: ["Tenants", "Auth", "Plans"], icon: Cloud },
+      { title: isEnglish ? "Analytics" : "Analítica", items: isEnglish ? ["Charts", "Exports", "Insights"] : ["Gráficos", "Exportes", "Insights"], icon: BarChart3 },
+      { title: isEnglish ? "Automation" : "Automatización", items: isEnglish ? ["Notifications", "Rules", "Tasks"] : ["Notificaciones", "Reglas", "Tareas"], icon: Bot },
+      { title: isEnglish ? "Data" : "Datos", items: ["Responses", "Storage", "Events"], icon: DatabaseZap },
+      { title: isEnglish ? "Experience" : "Experiencia", items: isEnglish ? ["Builder", "Preview", "Sharing"] : ["Builder", "Preview", "Compartir"], icon: Activity },
+    ];
+  }
+
+  if (name.includes("chat") || name.includes("chatsi")) {
+    return [
+      { title: isEnglish ? "Channels" : "Canales", items: ["Web", "API", "Chatwoot"], icon: Bot },
+      { title: isEnglish ? "Billing" : "Billing", items: ["UniBee", "Izipay", "Plans"], icon: Activity },
+      { title: isEnglish ? "Tenants" : "Tenants", items: ["Isolation", "Roles", "+N workspaces"], icon: Users },
+      { title: isEnglish ? "Bridge" : "Bridge", items: ["Sync", "Webhooks", "Rules"], icon: Workflow },
+      { title: isEnglish ? "Security" : "Seguridad", items: ["Tokens", "Access", "Audit"], icon: ShieldCheck },
+      { title: isEnglish ? "Data" : "Datos", items: ["PostgreSQL", "Events", "Logs"], icon: DatabaseZap },
+    ];
+  }
+
+  if (name.includes("nuvoro")) {
+    return [
+      { title: isEnglish ? "Inbox" : "Inbox", items: ["Email", "Forwarding", "Parsing"], icon: Mail },
+      { title: isEnglish ? "Extraction" : "Extracción", items: ["Amount", "Bank", "Card"], icon: Bot },
+      { title: isEnglish ? "Finance" : "Finanzas", items: ["Monthly spend", "Cards", "Forecast"], icon: BarChart3 },
+      { title: isEnglish ? "Validation" : "Validación", items: ["Rules", "Duplicates", "Signals"], icon: CheckCircle2 },
+      { title: isEnglish ? "Privacy" : "Privacidad", items: ["Secure flow", "Isolation", "Logs"], icon: ShieldCheck },
+      { title: isEnglish ? "Dashboard" : "Dashboard", items: ["React", "Charts", "Insights"], icon: Activity },
+    ];
+  }
+
+  if (name.includes("wordpress") || name.includes("payhip") || name.includes("plugin") || group.includes("saas")) {
+    return [
+      { title: isEnglish ? "Access" : "Accesos", items: ["Users", "Roles", "Expiration"], icon: Users },
+      { title: isEnglish ? "Payments" : "Pagos", items: ["Payhip", "Webhook", "License"], icon: Activity },
+      { title: isEnglish ? "WordPress" : "WordPress", items: ["Shortcode", "Gutenberg", "Admin"], icon: FileCode2 },
+      { title: isEnglish ? "Automation" : "Automatización", items: ["Creation", "Renewal", "Cleanup"], icon: Bot },
+      { title: isEnglish ? "Security" : "Seguridad", items: ["Validation", "Limits", "Audit"], icon: ShieldCheck },
+      { title: isEnglish ? "Data" : "Datos", items: ["Tables", "Meta", "Events"], icon: DatabaseZap },
+    ];
+  }
+
+  if (group.includes("web") || name.includes("seo")) {
+    return [
+      { title: isEnglish ? "Frontend" : "Frontend", items: ["UX", "Responsive", "Core UI"], icon: Globe2 },
+      { title: isEnglish ? "SEO" : "SEO", items: ["Indexing", "Schema", "Content"], icon: Search },
+      { title: isEnglish ? "Performance" : "Performance", items: ["CWV", "Cache", "Images"], icon: Activity },
+      { title: isEnglish ? "CMS" : "CMS", items: ["WordPress", "Bricks", "Blocks"], icon: FileCode2 },
+      { title: isEnglish ? "Analytics" : "Analítica", items: ["GA4", "Events", "Reports"], icon: BarChart3 },
+      { title: isEnglish ? "Infra" : "Infra", items: ["Cloudflare", "Hosting", "DNS"], icon: Cloud },
+    ];
+  }
+
+  return [
+    { title: isEnglish ? "Channels" : "Canales", items: ["Web", "API", isEnglish ? "Ops" : "Operación"], icon: commonIcons[0] },
+    { title: isEnglish ? "Core services" : "Servicios Core", items: isEnglish ? ["Processes", "Automation", "Analytics"] : ["Procesos", "Automatización", "Analítica"], icon: commonIcons[1] },
+    { title: isEnglish ? "Data layer" : "Capa de datos", items: ["PostgreSQL", "Storage", "Events"], icon: commonIcons[2] },
+    { title: "API Gateway", items: isEnglish ? ["Security", "Routing", "Scale"] : ["Seguridad", "Ruteo", "Escala"], icon: commonIcons[3] },
+    { title: isEnglish ? "Users" : "Usuarios", items: isEnglish ? ["Roles", "Permissions", "Workflows"] : ["Roles", "Permisos", "Flujos"], icon: commonIcons[4] },
+    { title: isEnglish ? "Automation" : "Automatización", items: isEnglish ? ["Tasks", "Reports", "Alerts"] : ["Tareas", "Reportes", "Alertas"], icon: commonIcons[5] },
+  ];
 }
 
 function ArchitectureColumn({ title, items }: { title: string; items: string[] }) {

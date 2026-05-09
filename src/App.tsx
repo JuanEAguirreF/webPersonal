@@ -5,6 +5,7 @@ import {
   Bot,
   Braces,
   Building2,
+  CalendarDays,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
@@ -199,6 +200,7 @@ function App() {
           <Stack content={t} />
           <Services content={t} />
           <Method content={t} />
+          <ScheduleContact content={t} />
           <FinalCta content={t} />
         </motion.main>
       </AnimatePresence>
@@ -258,7 +260,7 @@ function Header({
 
         <div className="hidden items-center gap-3 lg:flex">
           <LanguageToggle locale={locale} spanishRegion={spanishRegion} onLocaleChange={onLocaleChange} />
-          <a className="button-secondary px-4 py-2 text-sm" href="#contact">
+          <a className="button-secondary px-4 py-2 text-sm" href="#agenda">
             {ctaLabel}
           </a>
         </div>
@@ -432,7 +434,7 @@ function Hero({ content: t }: ContentProps) {
                 {t.hero.primaryCta}
                 <ArrowUpRight size={18} />
               </a>
-              <a href="#contact" className="button-secondary">
+              <a href="#agenda" className="button-secondary">
                 {t.hero.secondaryCta}
                 <Mail size={18} />
               </a>
@@ -599,10 +601,10 @@ function AvailabilityPanel({ content: t }: ContentProps) {
     <div className="mt-8 rounded-xl border border-lineHover bg-white p-5 shadow-soft">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="inline-flex items-center gap-2 text-sm font-semibold text-accentHover">
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
             <span className="relative flex h-3 w-3">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accentLight opacity-40" />
-              <span className="relative inline-flex h-3 w-3 rounded-full bg-accentHover" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-45" />
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,.14)]" />
             </span>
             {isEnglish ? "Available for strategic projects" : "Disponible para proyectos estratégicos"}
           </p>
@@ -617,7 +619,7 @@ function AvailabilityPanel({ content: t }: ContentProps) {
             </span>
           </div>
         </div>
-        <a href="#contact" className="button-primary px-5 py-3">
+        <a href="#agenda" className="button-primary px-5 py-3">
           {t.hero.secondaryCta}
           <ArrowUpRight size={17} />
         </a>
@@ -777,9 +779,9 @@ function Projects({ content: t }: ContentProps) {
         </div>
       </div>
 
-      <div className="mt-8 hidden overflow-visible lg:block">
-        <div className="relative min-h-[610px] overflow-visible" data-project-carousel-stage>
-          <div className="relative z-20 mx-auto h-[590px] max-w-6xl overflow-visible px-8">
+      <div className="mt-8 hidden overflow-visible pb-4 lg:block">
+        <div className="relative min-h-[670px] overflow-visible" data-project-carousel-stage>
+          <div className="relative z-20 mx-auto h-[650px] max-w-6xl overflow-visible px-8">
             <AnimatePresence custom={projectDirection} initial={false}>
               <motion.div
                 key={`${active.title}-${project.name}`}
@@ -843,7 +845,7 @@ function Projects({ content: t }: ContentProps) {
           </button>
         </div>
 
-        <div className="mt-2 flex items-center justify-center gap-3 lg:mt-4">
+        <div className="mt-4 flex items-center justify-center gap-3 lg:mt-6">
           <button className="project-arrow-button hidden lg:grid" onClick={() => moveProject(-1)} aria-label="Previous project">
             <ChevronLeft size={18} />
           </button>
@@ -1507,7 +1509,7 @@ function ServiceCard({
 
         <h3 className="max-w-sm text-2xl font-semibold leading-tight text-ink">{service.title}</h3>
         <p className="mt-4 max-w-md text-base leading-7 text-slatecopy">{service.body}</p>
-        <a href="#contact" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-accentHover">
+        <a href="#agenda" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-accentHover">
           <span>{index === 0 ? "Learn more" : ""}</span>
           <ArrowUpRight size={18} />
         </a>
@@ -1674,7 +1676,7 @@ function Method({ content: t }: ContentProps) {
               : "Cada etapa está diseñada para reducir riesgos, maximizar valor y asegurar que la tecnología sea un verdadero impulsor de crecimiento."}
           </p>
         </div>
-        <a href="#contact" className="button-primary px-4 py-3 lg:self-center">
+        <a href="#agenda" className="button-primary px-4 py-3 lg:self-center">
           {t.hero.secondaryCta}
           <ArrowUpRight size={17} />
         </a>
@@ -1691,6 +1693,171 @@ function TargetIcon() {
       <path d="M12 13a1 1 0 1 0-1-1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       <path d="M13 11 20 4m0 0h-4m4 0v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  );
+}
+
+function ScheduleContact({ content: t }: ContentProps) {
+  const isEnglish = t.meta.location.includes("Peru");
+  const calendlyUrl = "https://calendly.com/juaneaguirref/20-min";
+  const days = isEnglish ? ["MON", "TUE", "WED", "THU", "FRI"] : ["LUN", "MAR", "MIE", "JUE", "VIE"];
+  const times = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
+  const selectedTime = "16:00";
+  const bullets = isEnglish
+    ? [
+      "Understand your goals and priorities",
+      "Identify fast-impact opportunities",
+      "Map possible solutions and next steps",
+    ]
+    : [
+      "Entendemos tus objetivos y prioridades",
+      "Identificamos oportunidades de impacto rápido",
+      "Trazamos posibles soluciones y próximos pasos",
+    ];
+
+  return (
+    <section id="agenda" className="relative overflow-hidden bg-white px-5 py-20 lg:px-8 lg:py-24">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_82%_28%,rgba(124,58,237,.10),transparent_30%),linear-gradient(180deg,#FFFFFF_0%,#F8FAFC_100%)]" />
+      <div className="relative mx-auto max-w-7xl">
+        <div className="relative overflow-hidden rounded-[28px] border border-line bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,.08)] lg:p-10 xl:p-14">
+          <div className="pointer-events-none absolute right-8 top-10 hidden h-[520px] w-[520px] rounded-full border border-primary/10 lg:block" />
+          <div className="pointer-events-none absolute right-16 top-24 hidden h-[430px] w-[430px] rounded-full border border-primary/10 lg:block" />
+          <div className="pointer-events-none absolute right-[42%] top-[46%] hidden h-28 w-36 bg-[radial-gradient(circle,#A78BFA_1.3px,transparent_1.3px)] [background-size:14px_14px] opacity-40 lg:block" />
+
+          <div className="grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+            <div>
+              <div className="inline-flex max-w-full items-center gap-3 rounded-[18px] border border-lineHover bg-surfaceAlt px-5 py-4 text-primary shadow-sm">
+                <CalendarDays size={22} />
+                <span className="text-sm font-bold sm:text-base">
+                  {isEnglish ? "20 minutes that can clarify your project" : "20 minutos que pueden cambiar tu proyecto"}
+                </span>
+              </div>
+
+              <h2 className="mt-9 max-w-3xl text-4xl font-semibold leading-tight text-ink md:text-5xl">
+                {isEnglish ? (
+                  <>
+                    Let&apos;s schedule a <span className="text-primary">20-minute</span> exploratory call
+                  </>
+                ) : (
+                  <>
+                    Agendemos una charla exploratoria de <span className="text-primary">20 min</span>
+                  </>
+                )}
+              </h2>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-slatecopy">
+                {isEnglish
+                  ? "Let’s talk about your project, current challenges and how we can create impact from the first month."
+                  : "Conversemos sobre tu proyecto, retos actuales y cómo podemos generar impacto desde el primer mes."}
+              </p>
+
+              <div className="mt-8 grid gap-4">
+                {bullets.map((item, index) => {
+                  const Icon = [TargetIcon, TrendingUp, Sparkles][index] ?? CheckCircle2;
+                  return (
+                    <div key={item} className="flex items-center gap-4">
+                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primaryUltraSoft text-primary">
+                        {index === 0 ? <TargetIcon /> : <Icon size={21} />}
+                      </span>
+                      <span className="text-base font-semibold text-slatecopy">{item}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+                <a href={calendlyUrl} target="_blank" rel="noreferrer" className="button-primary px-6 py-4">
+                  <CalendarDays size={19} />
+                  {isEnglish ? "Schedule a 20-minute call" : "Agendar charla exploratoria de 20 min"}
+                  <ArrowUpRight size={18} />
+                </a>
+                <a href={`mailto:${t.meta.email}`} className="button-secondary px-6 py-4">
+                  <Mail size={18} />
+                  {isEnglish ? "Prefer email" : "Prefiero enviar un correo"}
+                </a>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="rounded-[24px] border border-line bg-white/95 p-6 shadow-[0_18px_60px_rgba(15,23,42,.10)] backdrop-blur">
+                <div className="mb-7 flex items-center justify-between">
+                  <h3 className="text-2xl font-semibold text-ink">{isEnglish ? "Choose a time" : "Elige un horario"}</h3>
+                  <div className="flex items-center gap-2">
+                    {[ChevronLeft, ChevronRight].map((Icon, index) => (
+                      <a
+                        key={index}
+                        href={calendlyUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="grid h-10 w-10 place-items-center rounded-full border border-line bg-white text-primary transition hover:border-primary/30 hover:bg-surfaceAlt hover:shadow-sm"
+                        aria-label={isEnglish ? "Open Calendly" : "Abrir Calendly"}
+                      >
+                        <Icon size={18} />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-5 gap-2 text-center">
+                  {days.map((day, index) => (
+                    <a
+                      key={day}
+                      href={calendlyUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`rounded-full px-3 py-3 text-sm font-bold transition ${index === 2 ? "bg-primaryUltraSoft text-primary" : "text-muted hover:bg-surfaceAlt hover:text-primary"}`}
+                    >
+                      {day}
+                    </a>
+                  ))}
+                </div>
+
+                <div className="mt-5 grid grid-cols-3 gap-3">
+                  {times.map((time) => (
+                    <a
+                      key={time}
+                      href={calendlyUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`rounded-xl border px-4 py-4 text-center text-base font-semibold transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-soft ${time === selectedTime
+                        ? "border-primary bg-primary text-white shadow-glow"
+                        : "border-line bg-white text-slatecopy"
+                        }`}
+                    >
+                      {time}
+                    </a>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex flex-wrap items-center gap-4 text-sm font-semibold text-slatecopy">
+                  <span className="inline-flex items-center gap-2">
+                    <Clock3 size={18} className="text-primary" />
+                    {isEnglish ? "Duration: 20 minutes" : "Duración: 20 minutos"}
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <ShieldCheck size={18} className="text-primary" />
+                    {isEnglish ? "No commitment" : "Sin compromiso"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm font-semibold text-slatecopy">
+            <span className="inline-flex items-center gap-2">
+              <ShieldCheck size={18} className="text-primary" />
+              {isEnglish ? "Private and confidential" : "Privado y confidencial"}
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <CalendarDays size={18} className="text-primary" />
+              {isEnglish ? "Reschedule anytime" : "Reprograma cuando quieras"}
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Mail size={18} className="text-primary" />
+              {isEnglish ? "Email remains available" : "El correo sigue disponible"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

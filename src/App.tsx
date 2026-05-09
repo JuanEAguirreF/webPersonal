@@ -239,8 +239,8 @@ function Header({
     <header className="sticky top-0 z-50 border-b border-line/80 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
         <a href="#top" className="flex items-center gap-3" aria-label={name}>
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-white text-lg font-semibold text-primary shadow-sm ring-1 ring-line">
-            JA
+          <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-line">
+            <img src="/64.png" alt="" className="h-8 w-8 rounded-md object-contain" aria-hidden="true" />
           </span>
           <span className="text-sm font-semibold text-ink md:text-base">{name}</span>
         </a>

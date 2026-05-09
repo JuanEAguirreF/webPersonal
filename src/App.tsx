@@ -388,9 +388,9 @@ function Hero({ content: t }: ContentProps) {
   const { scrollYProgress } = useScroll();
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
-  const panelX = useSpring(useTransform(pointerX, [-1, 1], [12, -12]), { stiffness: 90, damping: 24 });
-  const panelY = useSpring(useTransform(pointerY, [-1, 1], [10, -10]), { stiffness: 90, damping: 24 });
-  const panelRotate = useSpring(useTransform(pointerX, [-1, 1], [-0.7, 0.7]), { stiffness: 90, damping: 24 });
+  const panelX = useSpring(useTransform(pointerX, [-1, 1], [6, -6]), { stiffness: 90, damping: 24 });
+  const panelY = useSpring(useTransform(pointerY, [-1, 1], [5, -5]), { stiffness: 90, damping: 24 });
+  const panelRotate = useSpring(useTransform(pointerX, [-1, 1], [-0.35, 0.35]), { stiffness: 90, damping: 24 });
   const copyY = useSpring(useTransform(pointerY, [-1, 1], [-4, 4]), { stiffness: 90, damping: 24 });
   const heroCopyScroll = useTransform(scrollYProgress, [0, 0.18], [0, 26]);
   const heroPanelScroll = useTransform(scrollYProgress, [0, 0.18], [0, -28]);
@@ -414,8 +414,8 @@ function Hero({ content: t }: ContentProps) {
       onPointerMove={handlePointerMove}
       onPointerLeave={resetPointer}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_16%,rgba(124,58,237,0.12),transparent_30%),linear-gradient(90deg,#ffffff_0%,#ffffff_48%,#F8FAFC_100%)]" />
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-14 pt-14 lg:min-h-[760px] lg:grid-cols-[1fr_0.96fr] lg:gap-12 lg:px-8 lg:pb-20 lg:pt-24">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_18%,rgba(124,58,237,0.08),transparent_28%),linear-gradient(90deg,#ffffff_0%,#ffffff_55%,#F8FAFC_100%)]" />
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-14 pt-14 lg:min-h-[760px] lg:grid-cols-[1.1fr_0.82fr] lg:gap-14 lg:px-8 lg:pb-20 lg:pt-24">
         <motion.div initial="hidden" animate="visible" variants={stagger} style={{ y: copyY }} className="flex flex-col justify-center">
           <motion.div style={{ y: heroCopyScroll }}>
             <motion.p variants={fadeUp} className="mb-4 text-sm font-medium text-slatecopy">
@@ -471,104 +471,71 @@ function Hero({ content: t }: ContentProps) {
 
 function ArchitecturePanel({ title, items, dotsY }: { title: string; items: string[]; dotsY?: MotionValue<number> }) {
   const isEnglish = title.toLowerCase().startsWith("impact");
-  const stats = isEnglish
+  const outcomes = isEnglish
     ? [
-      ["Users", "12,540", "+12.9%"],
-      ["MRR", "$24,830", "+8.1%"],
-      ["Churn", "2.4%", "-0.6%"],
+      ["Strategy", "Business context before technical decisions"],
+      ["Architecture", "Systems designed for scale, security and maintainability"],
+      ["Execution", "SaaS, automation and data workflows shipped with focus"],
     ]
     : [
-      ["Usuarios", "12,540", "+12.9%"],
-      ["MRR", "$24,830", "+8.1%"],
-      ["Churn", "2.4%", "-0.6%"],
+      ["Estrategia", "Contexto de negocio antes de decisiones técnicas"],
+      ["Arquitectura", "Sistemas pensados para escala, seguridad y mantenimiento"],
+      ["Ejecución", "SaaS, automatización y datos con foco en entrega"],
     ];
+  const flow = isEnglish ? ["Business", "Architecture", "Build", "Optimize"] : ["Negocio", "Arquitectura", "Construcción", "Optimización"];
 
   return (
-    <div className="relative rounded-[28px] border border-line bg-white p-4 shadow-glow">
-      <motion.div style={{ y: dotsY }} className="absolute -right-10 -top-12 hidden h-24 w-40 bg-[radial-gradient(circle,#A78BFA_1.5px,transparent_1.5px)] [background-size:14px_14px] opacity-60 lg:block" />
-      <div className="rounded-2xl border border-line bg-mist p-5">
-        <div className="mb-6 flex items-center justify-between">
+    <div className="relative mt-10 rounded-[24px] border border-line bg-white/90 p-4 shadow-soft backdrop-blur">
+      <motion.div style={{ y: dotsY }} className="absolute -right-8 -top-10 hidden h-20 w-32 bg-[radial-gradient(circle,#A78BFA_1.2px,transparent_1.2px)] [background-size:16px_16px] opacity-35 lg:block" />
+      <div className="rounded-[20px] border border-line bg-[linear-gradient(135deg,#FFFFFF_0%,#F8FAFC_58%,#F5F3FF_100%)] p-5">
+        <div className="mb-6 flex items-start justify-between gap-5">
           <div>
-            <p className="text-sm font-semibold text-ink">{title}</p>
-            <p className="mt-1 text-xs text-slatecopy">Chatwoot · UniBee · SaaS · Data</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{title}</p>
+            <h2 className="mt-3 text-2xl font-semibold leading-tight text-ink">
+              {isEnglish ? "Technology with business direction" : "Tecnología con dirección de negocio"}
+            </h2>
+            <p className="mt-3 max-w-sm text-sm leading-6 text-slatecopy">
+              {isEnglish
+                ? "A compact view of how strategy, architecture and execution connect in real projects."
+                : "Una vista compacta de cómo se conectan estrategia, arquitectura y ejecución en proyectos reales."}
+            </p>
           </div>
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-brand text-white">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-white shadow-sm">
             <Sparkles size={18} />
           </span>
         </div>
-        <div className="grid gap-3 sm:grid-cols-3">
-          {stats.map(([label, value, delta]) => (
-            <div key={label} className="rounded-lg border border-line bg-white p-4 shadow-sm">
-              <p className="text-[11px] font-semibold text-slatecopy">{label}</p>
-              <p className="mt-2 text-xl font-semibold text-ink">{value}</p>
-              <p className="mt-1 text-xs font-semibold text-accentHover">{delta}</p>
-            </div>
-          ))}
-        </div>
 
-        <div className="mt-3 grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-lg border border-line bg-white p-4 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <p className="text-xs font-semibold text-slatecopy">{isEnglish ? "Revenue" : "Ingresos"}</p>
-              <Activity size={16} className="text-brand" />
-            </div>
-            <div className="flex h-28 items-end gap-2">
-              {[30, 42, 38, 52, 68, 58, 76, 84].map((height, index) => (
-                <span
-                  key={index}
-                  className="flex-1 rounded-t-md bg-gradient-to-t from-brand to-primarySoft"
-                  style={{ height: `${height}%` }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-lg bg-ink p-4 font-mono text-[11px] leading-5 text-slate-300 shadow-soft">
-            <p className="text-primaryUltraSoft">export const solution = &#123;</p>
-            <p className="pl-4">core: "operations",</p>
-            <p className="pl-4 text-violet-300">billing: "subscriptions",</p>
-            <p className="pl-4 text-accentSoft">automation: true,</p>
-            <p>&#125;;</p>
-          </div>
-        </div>
-
-        <div className="mt-3 grid gap-3 lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="rounded-lg border border-line bg-white p-4">
-            <p className="mb-3 text-xs font-semibold text-slatecopy">{isEnglish ? "Distribution" : "Distribución"}</p>
-            <div className="flex items-center gap-4">
-              <div className="h-20 w-20 rounded-full bg-[conic-gradient(#6D28D9_0_46%,#8B5CF6_46%_74%,#E9D5FF_74%_100%)] p-3">
-                <div className="h-full w-full rounded-full bg-white" />
-              </div>
-              <div className="space-y-2 text-xs font-medium text-slatecopy">
-                <p><span className="mr-2 inline-block h-2 w-2 rounded-full bg-brand" />Web</p>
-                <p><span className="mr-2 inline-block h-2 w-2 rounded-full bg-violet" />SaaS</p>
-                <p><span className="mr-2 inline-block h-2 w-2 rounded-full bg-brandSoft" />Data</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-line bg-white p-4">
-            <p className="mb-3 text-xs font-semibold text-slatecopy">{isEnglish ? "Services" : "Servicios"}</p>
-            <div className="grid gap-2">
-              {items.slice(0, 4).map((item) => (
-                <div key={item} className="flex items-center justify-between rounded-md bg-mist px-3 py-2 text-xs font-semibold text-slatecopy">
-                  <span>{item}</span>
-                  <span className="text-accentHover">{isEnglish ? "Active" : "Activo"}</span>
+        <div className="grid gap-3">
+          {outcomes.map(([label, body], index) => {
+            const Icon = [TrendingUp, Network, Workflow][index] ?? CheckCircle2;
+            return (
+              <div key={label} className="flex gap-4 rounded-xl border border-line bg-white/86 p-4 shadow-sm">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primaryUltraSoft text-primary">
+                  <Icon size={18} />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-ink">{label}</p>
+                  <p className="mt-1 text-sm leading-6 text-slatecopy">{body}</p>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            );
+          })}
         </div>
 
-        <div className="mt-4 flex items-center justify-end">
-          <div className="grid w-full max-w-sm grid-cols-3 gap-2 text-center">
-            {["API", "CRM", "BI"].map((item) => (
-              <div key={item} className="rounded-lg border border-line bg-white p-3 text-xs font-semibold text-slatecopy">
-                {item}
+        <div className="mt-4 rounded-xl border border-line bg-white/80 p-4">
+          <div className="relative flex items-center justify-between">
+            <span className="absolute left-6 right-6 top-1/2 h-px -translate-y-1/2 bg-primaryUltraSoft" aria-hidden="true" />
+            {flow.map((step, index) => (
+              <div key={step} className="relative z-10 flex flex-col items-center gap-2">
+                <span className={`grid h-9 w-9 place-items-center rounded-full border text-xs font-bold ${index === 0 ? "border-primary bg-primary text-white" : "border-lineHover bg-white text-primary"}`}>
+                  {index + 1}
+                </span>
+                <span className="max-w-[84px] text-center text-[11px] font-semibold leading-4 text-slatecopy">{step}</span>
               </div>
             ))}
           </div>
         </div>
+
       </div>
     </div>
   );

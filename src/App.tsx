@@ -89,6 +89,7 @@ import { useSeo } from "./hooks/useSeo";
 import { fadeUp, stagger } from "./lib/motion";
 
 const icons = [Building2, Layers3, DatabaseZap, Globe2, Code2, Cloud, BarChart3, Workflow];
+const CALENDLY_URL = "https://calendly.com/juaneaguirref/20-min";
 
 const flagSources: Record<string, string> = {
   AR: flagAr,
@@ -388,6 +389,7 @@ function FlagMark({ country }: { country: string }) {
 
 function Hero({ content: t }: ContentProps) {
   const { scrollYProgress } = useScroll();
+  const heroHeadline = splitHeroHeadline(t.hero.headline);
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
   const panelX = useSpring(useTransform(pointerX, [-1, 1], [6, -6]), { stiffness: 90, damping: 24 });
@@ -420,11 +422,18 @@ function Hero({ content: t }: ContentProps) {
       <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-14 pt-14 lg:min-h-[760px] lg:grid-cols-[1.1fr_0.82fr] lg:gap-14 lg:px-8 lg:pb-20 lg:pt-24">
         <motion.div initial="hidden" animate="visible" variants={stagger} style={{ y: copyY }} className="flex flex-col justify-center">
           <motion.div style={{ y: heroCopyScroll }}>
-            <motion.p variants={fadeUp} className="mb-4 text-sm font-medium text-slatecopy">
+            <motion.p variants={fadeUp} className="relative mb-5 inline-flex items-center gap-3 text-sm font-semibold text-slatecopy">
+              <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_0_6px_rgba(124,58,237,.12)]" aria-hidden="true" />
               {t.hero.metaLine}
             </motion.p>
-            <motion.h1 variants={fadeUp} className="max-w-4xl text-[2.35rem] font-semibold leading-[1.06] tracking-0 text-ink sm:text-5xl md:text-6xl lg:text-[4.6rem]">
-              {t.hero.headline}
+            <motion.h1 variants={fadeUp} className="relative isolate max-w-4xl text-[2.35rem] font-semibold leading-[1.06] tracking-0 text-ink sm:text-5xl md:text-6xl lg:text-[4.6rem]">
+              <span className="pointer-events-none absolute -left-6 top-2 hidden h-[82%] w-px bg-gradient-to-b from-primary/70 via-primarySoft/50 to-transparent lg:block" aria-hidden="true" />
+              {heroHeadline.main}
+              {" "}
+              <span className="relative inline-block text-primary">
+                <span className="pointer-events-none absolute inset-x-0 bottom-[0.08em] -z-10 h-[0.22em] rounded-full bg-primaryUltraSoft/90" aria-hidden="true" />
+                {heroHeadline.accent}
+              </span>
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-lg leading-8 text-slatecopy md:text-xl">
               {t.hero.subheadline}
@@ -558,39 +567,120 @@ function About({ content: t }: ContentProps) {
       ["8+", "Industrias y contextos operativos"],
       ["100%", "Compromiso con resultados medibles"],
     ];
+  const highlightIcons = [Code2, Layers3, TrendingUp, Sparkles];
 
   return (
-    <Section id="sobre-mi" className="bg-mist">
-      <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+    <Section id="sobre-mi" className="relative overflow-hidden bg-white">
+      <div className="pointer-events-none absolute left-0 top-0 h-full w-full bg-[radial-gradient(circle_at_12%_18%,rgba(124,58,237,.07),transparent_28%),linear-gradient(180deg,#FFFFFF_0%,#F8FAFC_100%)]" />
+      <div className="relative grid gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div>
           <SectionIntro title={t.about.title} text={t.about.intro} />
           <AvailabilityPanel content={t} />
-          <div className="mt-5 grid overflow-hidden rounded-xl border border-line bg-white shadow-soft sm:grid-cols-2">
+          <div className="mt-6 grid overflow-hidden rounded-[20px] border border-line bg-white shadow-soft sm:grid-cols-2">
             {metrics.map(([value, label]) => (
-              <div key={label} className="border-b border-line p-5 last:border-b-0 sm:border-r sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-child(n+3)]:border-b-0">
-                <p className="text-3xl font-semibold text-brand">{value}</p>
-                <p className="mt-2 text-sm leading-6 text-slatecopy">{label}</p>
+              <div key={label} className="border-b border-line p-6 last:border-b-0 sm:border-r sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-child(n+3)]:border-b-0">
+                <p className="text-3xl font-semibold text-primary">{value}</p>
+                <p className="mt-2 max-w-[11rem] text-sm leading-6 text-slatecopy">{label}</p>
               </div>
             ))}
           </div>
         </div>
         <div>
-          <div className="space-y-5 text-lg leading-8 text-slatecopy">
+          <div className="space-y-6 text-lg leading-8 text-ink">
             {t.about.body.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {t.about.highlights.map((highlight) => (
-              <div key={highlight} className="flex items-center gap-3 rounded-lg border border-line bg-white p-4 shadow-sm">
-                <CheckCircle2 className="text-brand" size={20} />
-                <span className="text-sm font-semibold text-ink">{highlight}</span>
-              </div>
-            ))}
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {t.about.highlights.map((highlight, index) => {
+              const Icon = highlightIcons[index] ?? CheckCircle2;
+              return (
+                <div key={highlight} className="flex items-center gap-4 rounded-[18px] border border-line bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-primary/20 hover:shadow-soft">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primaryUltraSoft text-primary">
+                    <Icon size={21} />
+                  </span>
+                  <span className="text-sm font-semibold text-ink">{highlight}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
+      <AboutExploreStrip isEnglish={isEnglish} />
     </Section>
+  );
+}
+
+function AboutExploreStrip({ isEnglish }: { isEnglish: boolean }) {
+  const days = isEnglish
+    ? [
+      ["MON", "12"],
+      ["TUE", "13"],
+      ["WED", "14"],
+      ["THU", "15"],
+      ["FRI", "16"],
+    ]
+    : [
+      ["LUN", "12"],
+      ["MAR", "13"],
+      ["MIE", "14"],
+      ["JUE", "15"],
+      ["VIE", "16"],
+    ];
+
+  return (
+    <a
+      href={CALENDLY_URL}
+      target="_blank"
+      rel="noreferrer"
+      className="group relative mt-12 grid overflow-hidden rounded-[22px] border border-lineHover bg-white p-5 shadow-soft transition hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_18px_60px_rgba(109,40,217,.12)] lg:grid-cols-[1fr_auto_auto] lg:items-center lg:gap-8 lg:p-7"
+    >
+      <div className="pointer-events-none absolute -left-10 -top-12 h-40 w-40 bg-[radial-gradient(circle,#A78BFA_1.2px,transparent_1.2px)] [background-size:12px_12px] opacity-35" />
+      <div className="relative flex items-center gap-5">
+        <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-primaryUltraSoft text-primary transition group-hover:scale-105 group-hover:bg-primary group-hover:text-white">
+          <CalendarDays size={30} />
+        </span>
+        <div>
+          <h3 className="text-xl font-semibold text-ink">
+            {isEnglish ? "Let’s explore how we can create impact together" : "Exploremos cómo crear impacto juntos"}
+          </h3>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-slatecopy">
+            {isEnglish
+              ? "Book a 20-minute exploratory call. No commitment, just a strategic conversation."
+              : "Agenda una charla exploratoria de 20 minutos. Sin compromiso, solo una conversación estratégica."}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-6 flex items-center gap-2 border-line lg:mt-0 lg:border-l lg:pl-8">
+        {days.map(([day, date], index) => (
+          <span
+            key={day}
+            className={`grid h-16 w-14 place-items-center rounded-full text-center text-xs font-bold transition group-hover:-translate-y-0.5 ${index === 1 ? "bg-primary text-white shadow-glow" : "bg-surfaceAlt text-slatecopy"}`}
+          >
+            <span>
+              <span className="block text-[10px]">{day}</span>
+              <span className="mt-1 block text-base">{date}</span>
+            </span>
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-6 flex flex-col gap-3 lg:mt-0 lg:min-w-[260px]">
+        <span className="button-primary w-full px-5 py-4">
+          <CalendarDays size={18} />
+          {isEnglish ? "Schedule a 20 min call" : "Agendar llamada de 20 min"}
+          <ArrowUpRight size={17} />
+        </span>
+        <span className="inline-flex items-center gap-2 text-sm font-semibold text-slatecopy">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+          </span>
+          {isEnglish ? "Several slots available" : "Varios horarios disponibles"}
+        </span>
+      </div>
+    </a>
   );
 }
 
@@ -1698,7 +1788,7 @@ function TargetIcon() {
 
 function ScheduleContact({ content: t }: ContentProps) {
   const isEnglish = t.meta.location.includes("Peru");
-  const calendlyUrl = "https://calendly.com/juaneaguirref/20-min";
+  const calendlyUrl = CALENDLY_URL;
   const days = isEnglish ? ["MON", "TUE", "WED", "THU", "FRI"] : ["LUN", "MAR", "MIE", "JUE", "VIE"];
   const times = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
   const selectedTime = "16:00";
@@ -1960,19 +2050,67 @@ function Section({
 }
 
 function SectionIntro({ title, text }: { title: string; text?: string }) {
+  const label = sectionEyebrow(title);
+  const words = title.trim().split(/\s+/);
+  const highlightedWord = words.length > 1 ? words.pop() ?? "" : "";
+  const mainTitle = highlightedWord ? words.join(" ") : title;
+
   return (
-    <div className="section-intro relative max-w-4xl lg:pl-6">
-      <div className="pointer-events-none absolute left-0 top-1 hidden h-full w-[3px] rounded-full bg-gradient-to-b from-primary via-primarySoft to-transparent lg:block" aria-hidden="true" />
-      <div className="pointer-events-none absolute -left-4 top-3 hidden h-20 w-20 rounded-full bg-primaryUltraSoft/75 blur-2xl lg:block" aria-hidden="true" />
+    <div className="section-intro relative max-w-4xl pl-5 sm:pl-7">
+      <div className="pointer-events-none absolute left-0 top-0 h-full w-px bg-gradient-to-b from-primary via-primarySoft/70 to-transparent" aria-hidden="true" />
+      <span className="pointer-events-none absolute -left-[3px] top-1 h-2 w-2 rounded-full bg-primary shadow-[0_0_0_6px_rgba(124,58,237,.12)]" aria-hidden="true" />
+      <div className="pointer-events-none absolute -left-8 top-8 hidden h-24 w-24 rounded-full bg-primaryUltraSoft/70 blur-2xl lg:block" aria-hidden="true" />
+      <p className="relative mb-5 text-xs font-bold uppercase tracking-[0.22em] text-primary">{label}</p>
       <h2 className="relative isolate text-4xl font-semibold leading-tight text-ink md:text-5xl">
-        <span className="relative inline">
-          <span className="pointer-events-none absolute inset-x-0 bottom-1 -z-10 h-4 rounded-full bg-primaryUltraSoft/80" aria-hidden="true" />
-          {title}
-        </span>
+        {mainTitle}
+        {highlightedWord ? " " : null}
+        {highlightedWord ? (
+          <span className="relative inline-block text-primary">
+            <span className="pointer-events-none absolute inset-x-0 bottom-1 -z-10 h-4 rounded-full bg-primaryUltraSoft/85" aria-hidden="true" />
+            {highlightedWord}
+          </span>
+        ) : null}
       </h2>
-      {text ? <p className="mt-5 text-lg leading-8 text-slatecopy">{text}</p> : null}
+      {text ? <p className="mt-5 max-w-3xl text-lg leading-8 text-slatecopy">{text}</p> : null}
     </div>
   );
+}
+
+function splitHeroHeadline(headline: string) {
+  const words = headline.trim().split(/\s+/);
+  const accentLength = words.length > 8 ? 2 : 1;
+  const accent = words.slice(-accentLength).join(" ");
+  const main = words.slice(0, -accentLength).join(" ");
+
+  return { main, accent };
+}
+
+function sectionEyebrow(title: string) {
+  const normalized = title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  if (normalized.includes("technology") || normalized.includes("tecnologia")) {
+    return normalized.includes("technology") ? "About me" : "Sobre mí";
+  }
+  if (normalized.includes("project") || normalized.includes("proyecto")) {
+    return normalized.includes("project") ? "Projects" : "Proyectos";
+  }
+  if (normalized.includes("experience") || normalized.includes("experiencia")) {
+    return normalized.includes("experience") ? "Experience" : "Experiencia";
+  }
+  if (normalized.includes("stack")) {
+    return normalized.includes("technology") ? "Technology" : "Tecnología";
+  }
+  if (normalized.includes("solution") || normalized.includes("solucion")) {
+    return normalized.includes("solution") ? "Services" : "Servicios";
+  }
+  if (normalized.includes("method") || normalized.includes("metodologia")) {
+    return normalized.includes("method") ? "Method" : "Metodología";
+  }
+
+  return "Juan Aguirre";
 }
 
 function slug(item: string) {

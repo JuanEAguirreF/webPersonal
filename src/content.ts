@@ -137,7 +137,8 @@ export const content: Record<Locale, Content> = {
         "Una mirada a cómo conecto tecnología, producto y operación para crear soluciones con impacto medible.",
       body: [
         "He construido mi carrera en el punto donde la tecnología deja de ser soporte y se convierte en ventaja operativa. Durante más de 10 años he liderado plataformas digitales, sistemas internos y productos web para organizaciones que necesitan estabilidad, velocidad y decisiones mejor informadas.",
-        "Mi trabajo combina arquitectura, desarrollo fullstack, automatización y lectura de negocio. No parto de la herramienta: parto del problema, del proceso y del impacto que una solución debe generar para usuarios, equipos y resultados.",
+        "Mi trabajo combina arquitectura, desarrollo fullstack, automatización y lectura de negocio.",
+        "No parto de la herramienta: parto del problema, del proceso y del impacto que una solución debe generar para usuarios, equipos y resultados.",
       ],
       highlights: [
         "Liderazgo técnico",
@@ -426,7 +427,8 @@ export const content: Record<Locale, Content> = {
         "How I connect technology, product and operations to build solutions with measurable impact.",
       body: [
         "I have built my career where technology stops being support work and becomes operational leverage. For more than 10 years, I have led digital platforms, internal systems and web products for organizations that need stability, speed and better-informed decisions.",
-        "My work combines architecture, fullstack development, automation and business judgment. I do not start with the tool: I start with the problem, the process and the impact a solution must create for users, teams and results.",
+        "My work combines architecture, fullstack development, automation and business judgment.",
+        "I do not start with the tool: I start with the problem, the process and the impact a solution must create for users, teams and results.",
       ],
       highlights: ["Technical leadership", "Software architecture", "Process optimization", "Digital transformation"],
     },

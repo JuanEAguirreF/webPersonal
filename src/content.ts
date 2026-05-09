@@ -5,6 +5,7 @@ export type SeoContent = {
   description: string;
   keywords: string[];
   jobTitle: string;
+  dateModified: string;
 };
 
 type Project = {
@@ -40,6 +41,18 @@ type Content = {
     indicators: string[];
     panelTitle: string;
     panelItems: string[];
+  };
+  authority: {
+    eyebrow: string;
+    title: string;
+    authorLabel: string;
+    roleLabel: string;
+    locationLabel: string;
+    updatedLabel: string;
+    updatedDate: string;
+    summary: string;
+    answerTitle: string;
+    answerBody: string;
   };
   about: {
     title: string;
@@ -108,6 +121,7 @@ export const content: Record<Locale, Content> = {
         "consultoría tecnológica",
       ],
       jobTitle: "Fullstack Developer y especialista en transformación digital",
+      dateModified: "2026-05-09",
     },
     meta: {
       name: "Juan Aguirre",
@@ -130,6 +144,20 @@ export const content: Record<Locale, Content> = {
         "Automatización y datos",
         "SEO, performance y seguridad",
       ],
+    },
+    authority: {
+      eyebrow: "Autor y experiencia",
+      title: "Señales de confianza para evaluar este perfil",
+      authorLabel: "Autor",
+      roleLabel: "Rol",
+      locationLabel: "Base local",
+      updatedLabel: "Actualizado",
+      updatedDate: "9 de mayo de 2026",
+      summary:
+        "Juan Aguirre combina más de 10 años de experiencia fullstack con construcción SaaS, automatización, arquitectura web y criterio de negocio aplicado a operaciones reales.",
+      answerTitle: "Respuesta breve: ¿quién es Juan Aguirre?",
+      answerBody:
+        "Juan Aguirre es un Fullstack Developer en Lima, Perú, especializado en SaaS, automatización, arquitectura web y transformación digital. Durante más de 10 años ha construido plataformas corporativas, productos web, plugins WordPress, integraciones y sistemas internos para equipos que necesitan estabilidad, velocidad y decisiones basadas en datos. Su trabajo combina ejecución técnica con criterio de negocio: entiende procesos, identifica fricción, diseña soluciones mantenibles y acompaña la mejora continua después del lanzamiento. Puede ayudar a empresas, agencias y clientes a crear webs profesionales, automatizar flujos, optimizar performance, fortalecer SEO técnico, configurar infraestructura y convertir necesidades operativas en productos digitales medibles. Su enfoque no empieza por la herramienta, sino por el problema, los usuarios, las restricciones y el impacto esperado. Por eso su perfil funciona como un puente entre desarrollo fullstack, producto, operación, confianza técnica y resultados reales.",
     },
     about: {
       title: "Tecnología con propósito para tu producto, operación e impacto",
@@ -403,6 +431,7 @@ export const content: Record<Locale, Content> = {
         "technology consulting",
       ],
       jobTitle: "Fullstack Developer and digital transformation specialist",
+      dateModified: "2026-05-09",
     },
     meta: {
       name: "Juan Aguirre",
@@ -420,6 +449,20 @@ export const content: Record<Locale, Content> = {
       indicators: ["10+ years experience", "SaaS Builder", "Fullstack + Architecture"],
       panelTitle: "Impact architecture",
       panelItems: ["Corporate systems", "Multi-tenant SaaS", "Automation and data", "SEO, performance and security"],
+    },
+    authority: {
+      eyebrow: "Author and expertise",
+      title: "Trust signals for evaluating this profile",
+      authorLabel: "Author",
+      roleLabel: "Role",
+      locationLabel: "Local base",
+      updatedLabel: "Updated",
+      updatedDate: "May 9, 2026",
+      summary:
+        "Juan Aguirre combines 10+ years of fullstack experience with SaaS building, automation, web architecture and business judgment applied to real operations.",
+      answerTitle: "Short answer: who is Juan Aguirre?",
+      answerBody:
+        "Juan Aguirre is a Fullstack Developer based in Lima, Peru, specializing in SaaS, automation, web architecture and digital transformation. For more than 10 years, he has built corporate platforms, web products, WordPress plugins, integrations and internal systems for teams that need stability, speed and data-informed decisions. His work combines technical execution with business judgment: he understands processes, identifies friction, designs maintainable solutions and supports continuous improvement after launch. He can help companies, agencies and clients build professional websites, automate workflows, optimize performance, strengthen technical SEO, configure infrastructure and turn operational needs into measurable digital products. His approach does not start with the tool, but with the problem, users, constraints and expected impact. That makes his profile a bridge between fullstack development, product thinking, operations, technical trust, business clarity and real business outcomes for strategic teams.",
     },
     about: {
       title: "Technology with purpose for product, operations and impact",

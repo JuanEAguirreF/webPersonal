@@ -2017,8 +2017,10 @@ function Footer({ content: t }: ContentProps) {
   return (
     <footer className="border-t border-line bg-white px-5 py-8 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-slatecopy md:flex-row md:items-center md:justify-between">
-        <p>{t.meta.name} · {t.meta.role}</p>
-        <p>{t.meta.location}</p>
+        <p className="font-semibold text-ink">{t.meta.name} · {t.meta.role}</p>
+        <p>
+          {t.meta.location} · GMT-5 · {t.authority.updatedLabel}: {t.authority.updatedDate}
+        </p>
       </div>
     </footer>
   );
